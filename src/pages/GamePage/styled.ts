@@ -4,10 +4,6 @@ export const ZoneTitle = styled.div`
   font-size: 28px;
 `
 
-export const StatsText = styled.div`
-  font-size: 16px;
-`
-
 export const Spacer = styled.div`
   margin: 1.5rem 0;
 `
