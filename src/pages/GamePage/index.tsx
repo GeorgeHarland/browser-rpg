@@ -9,7 +9,7 @@ const GamePage = () => {
   const [playerGold, setPlayerGold] = useState(5);
   const [tavern, setTavern] = useState(getRandomTavern());
   const [narrative, setNarrative] = useState('Welcome to the game! Narrative text will be written here.')
-  const [npcs, setNpcs] = useState([getRandomNpc(), getRandomNpc(), getRandomNpc()])
+  const [npcs, setNpcs] = useState([getRandomNpc('bartender'), getRandomNpc(), getRandomNpc()])
 
   const updateGold = (changeAmount: number) => {
     setPlayerGold(playerGold + changeAmount)
@@ -17,6 +17,14 @@ const GamePage = () => {
       setNarrative('Your gold has changed. Again.')
     } else {
       setNarrative('Your gold has changed.')
+    }
+  }
+
+  const speakToNpc = (npc) => {
+    if(npc.profession.profession === 'Bartender') {
+      setNarrative("Hello friend.")
+    } else {
+      setNarrative(npc.profession.opener)
     }
   }
 
@@ -32,9 +40,9 @@ const GamePage = () => {
       <OptionText onClick={() => updateGold(1)}>Ask for 1 gold</OptionText>
       <OptionText onClick={() => updateGold(-1)}>Give away 1 gold</OptionText>
       <OptionText onClick={() => setNarrative(`This tavern is ${tavern.size} sized. It is known for it's ${tavern.feature}.`)}>View your surroundings</OptionText>
+      <OptionText onClick={() => setNarrative(`You can't do this yet.`)}>Leave the tavern</OptionText>
       <Spacer />
-      {npcs.map((npc) => <OptionText onClick={() => setNarrative("They don't want to speak right now.")}><i className="ra ra-player"/>Speak to {npc.firstName} {npc.lastName}, a {npc.profession}</OptionText>)}
-      
+      {npcs.map((npc) => <OptionText onClick={() => speakToNpc(npc)}><i className="ra ra-player"/>Speak to {npc.firstName} {npc.lastName}, a {npc.ancestry.adj} {npc.profession.profession}</OptionText>)}
     </div>
   )  
 }
