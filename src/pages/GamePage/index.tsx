@@ -34,6 +34,8 @@ const GamePage = () => {
     }
   };
 
+  const saveGame = () => {}
+
   return (
     <div style={{ padding: '20px' }}>
       <ZoneTitle>{tavern.name}</ZoneTitle>
@@ -65,6 +67,8 @@ const GamePage = () => {
           {npc.profession.profession}
         </OptionText>
       ))}
+      <Spacer />
+      <OptionText onClick={saveGame}>Save to browser</OptionText>
     </div>
   );
 };
