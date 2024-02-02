@@ -59,7 +59,7 @@ export const generateNpc = (): NpcType => {
     currentHp: ancestriesRecord[randomAncestry].baseMaxHp,
     maxHp: ancestriesRecord[randomAncestry].baseMaxHp,
     mana: 0,
-    gold: 0,
+    gold: Math.floor(Math.random() * professionsRecord[randomProfession].incomeFactor),
     inventory: [],
     currentLocation: 1,
   };

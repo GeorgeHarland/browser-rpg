@@ -88,19 +88,19 @@ export type AncestryType = {
 export const professionsRecord: Record<ProfessionKeys, ProfessionType> = {
   Bartender: {
     name: 'Bartender',
-    incomeFactor: 4
+    incomeFactor: 20
   },
   Carpenter: {
     name: 'Carpenter',
-    incomeFactor: 4
+    incomeFactor: 8
   },
   Deserter: {
     name: 'Deserter',
-    incomeFactor: 1
+    incomeFactor: 3
   },
   Gambler: {
     name: 'Gambler',
-    incomeFactor: 3
+    incomeFactor: 8
   }
 }
 
