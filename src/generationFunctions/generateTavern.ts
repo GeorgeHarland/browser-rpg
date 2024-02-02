@@ -1,3 +1,5 @@
+import { SizeKeys, TavernType } from "../types";
+
 const tavernNameAdjectives = [
   'Crimson',
   'Emerald',
@@ -8,7 +10,7 @@ const tavernNameAdjectives = [
 
 const tavernNameNouns = ['Gryphon', 'Dragon', 'Zombie', 'Hedgehog', 'Gnome'];
 
-const tavernSizes = ['Small', 'Medium', 'Large', 'Huge'];
+const tavernSizes: SizeKeys[] = ['small', 'medium', 'large', 'huge'];
 
 const tavernFeatures = [
   'Elven Architecture',
@@ -20,7 +22,7 @@ const tavernFeatures = [
   'Talking Parrots',
 ];
 
-export const getRandomTavern = () => {
+export const generateTavern = (): TavernType => {
   const randomAdjective =
     tavernNameAdjectives[
       Math.floor(Math.random() * tavernNameAdjectives.length)
@@ -53,9 +55,11 @@ export const getRandomTavern = () => {
   }
 
   return {
+    id: 1,
     name: randomName,
     size: randomSize,
     rooms: roomAmount,
     feature: randomFeature,
+    options: [],
   };
 };

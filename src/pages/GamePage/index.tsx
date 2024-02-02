@@ -1,20 +1,20 @@
 import { useState } from 'react';
 import 'rpg-awesome/css/rpg-awesome.min.css';
 import { OptionText, Spacer, ZoneTitle } from './styled';
-import { getRandomTavern } from '../../generationFunctions/generateTavern';
-import { getRandomNpc } from '../../generationFunctions/generateNpc';
+import { generateTavern } from '../../generationFunctions/generateTavern';
+import { generateNpc } from '../../generationFunctions/generateNpc';
 
 const GamePage = () => {
   const [playerHp, setPlayerHp] = useState(10);
   const [playerGold, setPlayerGold] = useState(5);
-  const [tavern, setTavern] = useState(getRandomTavern());
+  const [tavern, setTavern] = useState(generateTavern());
   const [narrative, setNarrative] = useState(
     'Welcome to the game! Narrative text will be written here.'
   );
   const [npcs, setNpcs] = useState([
-    getRandomNpc('bartender'),
-    getRandomNpc(),
-    getRandomNpc(),
+    generateNpc('bartender'),
+    generateNpc(),
+    generateNpc(),
   ]);
 
   const updateGold = (changeAmount: number) => {
