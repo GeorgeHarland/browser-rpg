@@ -11,4 +11,5 @@ export const Spacer = styled.div`
 export const OptionText = styled.div`
   color: blue;
   cursor: pointer;
+  width: fit-content;
 `;

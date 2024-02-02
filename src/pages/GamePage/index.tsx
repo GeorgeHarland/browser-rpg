@@ -3,16 +3,17 @@ import 'rpg-awesome/css/rpg-awesome.min.css';
 import { OptionText, Spacer, ZoneTitle } from './styled';
 import { generateTavern } from '../../generationFunctions/generateTavern';
 import { generateNpc } from '../../generationFunctions/generateNpc';
+import { NpcType, ancestriesRecord } from '../../types';
 
 const GamePage = () => {
-  const [playerHp, setPlayerHp] = useState(10);
+  const [playerHp] = useState(10);
   const [playerGold, setPlayerGold] = useState(5);
-  const [tavern, setTavern] = useState(generateTavern());
+  const [tavern] = useState(generateTavern());
   const [narrative, setNarrative] = useState(
     'Welcome to the game! Narrative text will be written here.'
   );
-  const [npcs, setNpcs] = useState([
-    generateNpc('bartender'),
+  const [npcs] = useState([
+    generateNpc(),
     generateNpc(),
     generateNpc(),
   ]);
@@ -26,11 +27,11 @@ const GamePage = () => {
     }
   };
 
-  const speakToNpc = (npc) => {
-    if (npc.profession.profession === 'Bartender') {
+  const speakToNpc = (npc: NpcType) => {
+    if (npc.profession === 'Bartender') {
       setNarrative('Hello friend.');
     } else {
-      setNarrative(npc.profession.opener);
+      setNarrative("I don't want to talk.");
     }
   };
 
@@ -63,8 +64,8 @@ const GamePage = () => {
       {npcs.map((npc) => (
         <OptionText onClick={() => speakToNpc(npc)}>
           <i className="ra ra-player" />
-          Speak to {npc.firstName} {npc.lastName}, a {npc.ancestry.adj}{' '}
-          {npc.profession.profession}
+          Speak to {npc.firstName} {npc.lastName}, a {ancestriesRecord[npc.ancestry].adj}{' '}
+          {npc.profession}
         </OptionText>
       ))}
       <Spacer />
