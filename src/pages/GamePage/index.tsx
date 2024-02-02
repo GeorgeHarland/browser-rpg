@@ -5,8 +5,11 @@ import { GameStateType, NpcType, TavernType, ancestriesRecord } from '../../type
 import GameContext from '../../gameWorldState/gameContext';
 
 const GamePage = () => {
-  const [gameState] = useContext(GameContext);
-  if(!gameState) return;
+  const gameState = useContext(GameContext)?.state;
+  const dispatch = useContext(GameContext)?.dispatch;
+  
+  if(!gameState) return <div>Loading...</div>;
+
   const { player, npcs, locations }: GameStateType = gameState;
   const [narrative, setNarrative] = useState(
     'Welcome to the game! Narrative text will be written here.'
@@ -14,7 +17,7 @@ const GamePage = () => {
   const tavern = locations[0] as TavernType;
 
   const updateGold = (changeAmount: number) => {
-    player.gold = player.gold + changeAmount;
+    dispatch?.({type: 'UPDATE_GOLD', amount: changeAmount});
     if (narrative === 'Your gold has changed.') {
       setNarrative('Your gold has changed. Again.');
     } else {

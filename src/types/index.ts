@@ -4,6 +4,12 @@ export type GameStateType = {
   locations: LocationType[];
 }
 
+export type GameAction = 
+  | {type: 'LOAD_STATE'; stateToLoad: GameStateType}
+  | { type: 'UPDATE_GOLD'; amount: number }
+  | { type: 'UPDATE_PLAYER_HP'; amount: number }
+  // | { type: 'ADD_NPC'; npc: NpcType }
+
 export type PlayerType = {
   firstName: string;
   lastName: string;
