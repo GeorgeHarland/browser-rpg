@@ -1,25 +1,20 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import 'rpg-awesome/css/rpg-awesome.min.css';
 import { OptionText, Spacer, ZoneTitle } from './styled';
-import { generateTavern } from '../../generationFunctions/generateTavern';
-import { generateNpc } from '../../generationFunctions/generateNpc';
-import { NpcType, ancestriesRecord } from '../../types';
+import { GameStateType, NpcType, TavernType, ancestriesRecord } from '../../types';
+import GameContext from '../../gameWorldState/gameContext';
 
 const GamePage = () => {
-  const [playerHp] = useState(10);
-  const [playerGold, setPlayerGold] = useState(5);
-  const [tavern] = useState(generateTavern());
+  const [gameState] = useContext(GameContext);
+  if(!gameState) return;
+  const { player, npcs, locations }: GameStateType = gameState;
   const [narrative, setNarrative] = useState(
     'Welcome to the game! Narrative text will be written here.'
-  );
-  const [npcs] = useState([
-    generateNpc(),
-    generateNpc(),
-    generateNpc(),
-  ]);
+    );
+  const tavern = locations[0] as TavernType;
 
   const updateGold = (changeAmount: number) => {
-    setPlayerGold(playerGold + changeAmount);
+    player.gold = player.gold + changeAmount;
     if (narrative === 'Your gold has changed.') {
       setNarrative('Your gold has changed. Again.');
     } else {
@@ -41,8 +36,8 @@ const GamePage = () => {
     <div style={{ padding: '20px' }}>
       <ZoneTitle>{tavern.name}</ZoneTitle>
       <Spacer />
-      <p>HP: {playerHp}</p>
-      <p>{playerGold}g</p>
+      <p>HP: {player.currentHp}</p>
+      <p>{player.gold}g</p>
       <Spacer />
       <i>{narrative}</i>
       <Spacer />
@@ -69,7 +64,7 @@ const GamePage = () => {
         </OptionText>
       ))}
       <Spacer />
-      <OptionText onClick={saveGame}>Save to browser</OptionText>
+      <OptionText onClick={saveGame}><i className="ra ra-save" />Save to browser</OptionText>
     </div>
   );
 };

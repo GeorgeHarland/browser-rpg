@@ -1,7 +1,7 @@
 export type GameStateType = {
   player: PlayerType;
   npcs: NpcType[];
-  locations: Location[];
+  locations: LocationType[];
 }
 
 export type PlayerType = {

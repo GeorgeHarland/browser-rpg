@@ -4,7 +4,9 @@ import { GameStateType } from '../types';
 import { generateTavern } from '../generationFunctions/generateTavern';
 import { generateNpc } from '../generationFunctions/generateNpc';
 
-const GameContext = createContext({});
+type GameContextType = [GameStateType | null, React.Dispatch<React.SetStateAction<GameStateType | null>>];
+
+const GameContext = createContext<GameContextType>([null, () => {}]);
 
 type Props = {
   children: ReactNode;
@@ -17,7 +19,7 @@ export const GameProvider = ({ children }: Props) => {
     return false;
   }
 
-  const generateNewGame = () => {
+  const generateNewGame = (): GameStateType => {
     // gen locations inc. starting location
     const locations = []
     locations.push(generateTavern());
@@ -37,7 +39,11 @@ export const GameProvider = ({ children }: Props) => {
     const npcs = [];
     for(let i = 0; i < 3; i++) npcs.push(generateNpc());
     // setGameState
-    return null;
+    return {
+      player: player,
+      npcs: npcs,
+      locations: locations,
+    };
   }
 
   useEffect(() => {
@@ -49,6 +55,8 @@ export const GameProvider = ({ children }: Props) => {
       } else {
         setGameState(generateNewGame);
       }
+    } else {
+      setGameState(generateNewGame);
     }
   }, []);
 
