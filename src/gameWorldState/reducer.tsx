@@ -3,7 +3,7 @@ import { GameAction, GameStateType } from "../types";
 const gameReducer = (state: GameStateType, action: GameAction): GameStateType => {
   switch (action.type) {
     case 'LOAD_STATE':
-      return state
+      return action.stateToLoad;
     case 'UPDATE_GOLD':
       return {
         ...state,

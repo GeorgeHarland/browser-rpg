@@ -1,6 +1,6 @@
 // GameContext.js
 import { createContext, useEffect, ReactNode, useReducer } from 'react';
-import { GameAction, GameStateType } from '../types';
+import { GameAction, GameStateType, NpcType } from '../types';
 import { generateTavern } from '../generationFunctions/generateTavern';
 import { generateNpc } from '../generationFunctions/generateNpc';
 import gameReducer from './reducer';
@@ -46,10 +46,9 @@ export const GameProvider = ({ children }: Props) => {
 };
 
 const generateNewGame = (): GameStateType => {
-  // gen locations inc. starting location
   const locations = []
   locations.push(generateTavern());
-  // gen player, set loc to tavern
+
   const player = {
     firstName: 'Tom',
     lastName: 'Karnos',
@@ -61,10 +60,10 @@ const generateNewGame = (): GameStateType => {
     inventory: [],
     currentLocation: 1,
   }
-  // gen npcs, set loc to tavern
+  
   const npcs = [];
   for(let i = 0; i < 3; i++) npcs.push(generateNpc());
-  // setGameState
+
   return {
     player: player,
     npcs: npcs,
@@ -73,7 +72,29 @@ const generateNewGame = (): GameStateType => {
 }
 
 const isValidGameState = (parsedState: GameStateType) => {
-  return false;
+  if (!parsedState) return false;
+
+  const validPlayer = parsedState.player &&
+    typeof parsedState.player.firstName === 'string' &&
+    typeof parsedState.player.lastName === 'string' &&
+    typeof parsedState.player.currentHp === 'number' &&
+    typeof parsedState.player.maxHp === 'number' &&
+    Array.isArray(parsedState.player.inventory);
+
+  const validNpcs = Array.isArray(parsedState.npcs) &&
+    parsedState.npcs.every((npc: NpcType) => 
+    npc.firstName &&
+    typeof npc.lastName === 'string' &&
+    typeof npc.ancestry === 'string' &&
+    typeof npc.profession === 'string');
+
+  const validLocations = Array.isArray(parsedState.locations) &&
+    parsedState.locations.every((loc: any) => 
+    typeof loc.id === 'number' &&
+    typeof loc.name === 'string' &&
+    Array.isArray(loc.options));
+
+    return validPlayer && validNpcs && validLocations;
 }
 
 export default GameContext;

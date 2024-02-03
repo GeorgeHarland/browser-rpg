@@ -1,27 +1,35 @@
 import { AncestryKeys, NpcType, PersonalityKeys, ProfessionKeys, ancestriesRecord, professionsRecord } from "../types";
 
 const firstNames = [
-  'Rolf',
-  'Ilia',
-  'Semand',
-  'Pila',
-  'Grum',
   'Alison',
+  'Annie',
   'Elian',
+  'Grum',
+  'Ilia',
+  'Jerrick',
+  'Merrick',
+  'Pila',
+  'Rolf',
+  'Saran',
+  'Semand',
+  'Thormak',
   'Ulfrid',
   'Weslin',
+  'Zaylin'
 ];
 
 const secondNames = [
-  'Elnak',
-  'Cravenwood',
-  'Helmrock',
   'Altan',
-  'Fearsprig',
-  'Underhill',
+  'Brambleshack',
+  'Cravenwood',
   'Elkland',
-  'Humbletree',
+  'Elnak',
   'Espelian',
+  'Fearsprig',
+  'Helmrock',
+  'Humbletree',
+  'Tintann',
+  'Underhill',
 ];
 
 export const generateNpc = (): NpcType => {

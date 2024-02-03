@@ -33,7 +33,14 @@ const GamePage = () => {
     }
   };
 
-  const saveGame = () => {}
+  const saveGame = () => {
+    localStorage.setItem('gameState', JSON.stringify(gameState));
+  }
+
+  const fullyResetGame = () => {
+    localStorage.removeItem('gameState');
+    window.location.reload();
+  }
 
   return (
     <div style={{ padding: '20px' }}>
@@ -59,15 +66,16 @@ const GamePage = () => {
         Leave the tavern
       </OptionText>
       <Spacer />
-      {npcs.map((npc) => (
-        <OptionText onClick={() => speakToNpc(npc)}>
+      {npcs.map((npc, i) => (
+        <OptionText onClick={() => speakToNpc(npc)} key={i}>
           <i className="ra ra-player" />
           Speak to {npc.firstName} {npc.lastName}, a {ancestriesRecord[npc.ancestry].adj}{' '}
           {npc.profession}
         </OptionText>
       ))}
       <Spacer />
-      <OptionText onClick={saveGame}><i className="ra ra-save" />Save to browser</OptionText>
+      <OptionText onClick={saveGame}><i className="ra ra-save" /> Save to browser</OptionText>
+      <OptionText onClick={fullyResetGame}><i className="ra ra-bone-bite" /> Restart game with a new world</OptionText>
     </div>
   );
 };

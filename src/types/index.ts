@@ -63,22 +63,22 @@ export type OptionType = {
 export const ancestriesRecord: Record<AncestryKeys, AncestryType> = {
   Human: {
     name: 'Human',
-    adj: 'human',
+    adj: 'Human',
     baseMaxHp: 10,
   },
   Elf: {
     name: 'Elf',
-    adj: 'elven',
+    adj: 'Elven',
     baseMaxHp: 12,
   },
   Dwarf: {
     name: 'Dwarf',
-    adj: 'dwarven',
+    adj: 'Dwarven',
     baseMaxHp: 12,
   },
   Gnome: {
     name: 'Gnome',
-    adj: 'gnomish',
+    adj: 'Gnomish',
     baseMaxHp: 7,
   }
 }
