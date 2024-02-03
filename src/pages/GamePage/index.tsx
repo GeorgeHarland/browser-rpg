@@ -1,12 +1,13 @@
 import { useContext, useState } from 'react';
 import 'rpg-awesome/css/rpg-awesome.min.css';
 import { OptionText, Spacer, ZoneTitle } from './styled';
-import { GameStateType, NpcType, TavernType, ancestriesRecord } from '../../types';
+import { GameStateType, TavernType, ancestriesRecord } from '../../types';
 import GameContext from '../../gameWorldState/gameContext';
 
 const GamePage = () => {
   const gameState = useContext(GameContext)?.state;
   const dispatch = useContext(GameContext)?.dispatch;
+  const [showResetInput, setShowResetInput] = useState(false);
   
   if(!gameState) return <div>Loading...</div>;
 
@@ -25,16 +26,13 @@ const GamePage = () => {
     }
   };
 
-  const speakToNpc = (npc: NpcType) => {
-    if (npc.profession === 'Bartender') {
-      setNarrative('Hello friend.');
-    } else {
-      setNarrative("I don't want to talk.");
-    }
+  const speakToNpc = () => {
+    setNarrative("I don't want to talk right now.");
   };
 
   const saveGame = () => {
     localStorage.setItem('gameState', JSON.stringify(gameState));
+    setNarrative("Game saved.")
   }
 
   const fullyResetGame = () => {
@@ -67,7 +65,7 @@ const GamePage = () => {
       </OptionText>
       <Spacer />
       {npcs.map((npc, i) => (
-        <OptionText onClick={() => speakToNpc(npc)} key={i}>
+        <OptionText onClick={() => speakToNpc()} key={i}>
           <i className="ra ra-player" />
           Speak to {npc.firstName} {npc.lastName}, a {ancestriesRecord[npc.ancestry].adj}{' '}
           {npc.profession}
@@ -75,7 +73,13 @@ const GamePage = () => {
       ))}
       <Spacer />
       <OptionText onClick={saveGame}><i className="ra ra-save" /> Save to browser</OptionText>
-      <OptionText onClick={fullyResetGame}><i className="ra ra-bone-bite" /> Restart game with a new world</OptionText>
+      <Spacer />
+      <OptionText onClick={() => setShowResetInput((previous) => !previous)}><i className="ra ra-bone-bite" /> Restart game with a new world</OptionText>
+      {showResetInput && (
+        <div>
+          <OptionText onClick={fullyResetGame}>Are you sure? This world will be deleted.</OptionText>
+        </div>
+      )}
     </div>
   );
 };
