@@ -56,8 +56,9 @@ export type ItemType = {
 }
 
 export type OptionType = {
+  type: string;
   description: string;
-  action:(...args: any[]) => any;
+  action?:(...args: any[]) => any;
 }
 
 export const ancestriesRecord: Record<AncestryKeys, AncestryType> = {

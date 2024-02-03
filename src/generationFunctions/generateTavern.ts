@@ -60,6 +60,10 @@ export const generateTavern = (): TavernType => {
     size: randomSize,
     rooms: roomAmount,
     feature: randomFeature,
-    options: [],
+    options: [{
+      type: 'move',
+      description: 'Leave the tavern',
+      action: () => console.log('placeholder - will want to call a dispatch here + update narrative in state')
+    }],
   };
 };

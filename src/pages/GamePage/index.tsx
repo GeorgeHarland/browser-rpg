@@ -1,21 +1,47 @@
 import { useContext, useState } from 'react';
 import 'rpg-awesome/css/rpg-awesome.min.css';
-import { OptionText, Spacer, ZoneTitle } from './styled';
-import { GameStateType, TavernType, ancestriesRecord } from '../../types';
+import { OptionText, Spacer, SpacerWithLine, ZoneTitle } from './styled';
+import { GameStateType, OptionType, TavernType, ancestriesRecord } from '../../types';
 import GameContext from '../../gameWorldState/gameContext';
 
 const GamePage = () => {
   const gameState = useContext(GameContext)?.state;
   const dispatch = useContext(GameContext)?.dispatch;
   const [showResetInput, setShowResetInput] = useState(false);
-  
   if(!gameState) return <div>Loading...</div>;
-
   const { player, npcs, locations }: GameStateType = gameState;
   const [narrative, setNarrative] = useState(
     'Welcome to the game! Narrative text will be written here.'
     );
   const tavern = locations[0] as TavernType;
+
+  const generateOptions = (state: GameStateType): OptionType[] => {
+    // current player options: general (always allowed) + location specific + talk to any npc in the location
+    const playerLocation = state.locations.find(loc => loc.id === state.player.currentLocation);
+    const npcsInLocation = state.npcs.filter(npc => npc.currentLocation === state.player.currentLocation);
+    const locationOptions = playerLocation?.options || [];
+    const npcOptions = npcsInLocation.map(npc => ({
+      type: 'npc',
+      description: `Speak to ${npc.firstName} ${npc.lastName}, a ${ancestriesRecord[npc.ancestry].adj}${' '}
+      ${npc.profession}`,
+      action: () => speakToNpc()
+    }));
+    const spacer = {
+      type: 'spacer',
+      description: '',
+    } 
+    const askGold = {
+      type: 'gold',
+      description: 'Ask for 1 gold',
+      action: () => updateGold(1)
+    }
+    const giveGold = {
+      type: 'gold',
+      description: 'Give away 1 gold',
+      action: () => updateGold(-1)
+    }
+    return [askGold, giveGold, spacer, ...npcOptions, spacer, ...locationOptions];
+  }
 
   const updateGold = (changeAmount: number) => {
     dispatch?.({type: 'UPDATE_GOLD', amount: changeAmount});
@@ -43,37 +69,23 @@ const GamePage = () => {
   return (
     <div style={{ padding: '20px' }}>
       <ZoneTitle>{tavern.name}</ZoneTitle>
-      <Spacer />
+      <SpacerWithLine />
       <p>HP: {player.currentHp}</p>
       <p>{player.gold}g</p>
-      <Spacer />
+      <SpacerWithLine />
       <i>{narrative}</i>
-      <Spacer />
-      <OptionText onClick={() => updateGold(1)}>Ask for 1 gold</OptionText>
-      <OptionText onClick={() => updateGold(-1)}>Give away 1 gold</OptionText>
-      <OptionText
-        onClick={() =>
-          setNarrative(
-            `This tavern is ${tavern.size} sized. It is known for it's ${tavern.feature}.`
-          )
-        }
-      >
-        View your surroundings
-      </OptionText>
-      <OptionText onClick={() => setNarrative(`You can't do this yet.`)}>
-        Leave the tavern
-      </OptionText>
-      <Spacer />
-      {npcs.map((npc, i) => (
-        <OptionText onClick={() => speakToNpc()} key={i}>
-          <i className="ra ra-player" />
-          Speak to {npc.firstName} {npc.lastName}, a {ancestriesRecord[npc.ancestry].adj}{' '}
-          {npc.profession}
-        </OptionText>
-      ))}
-      <Spacer />
+      <SpacerWithLine />
+      {
+        generateOptions(gameState).map((option, index) => {
+          if(option.type === 'spacer') return <Spacer />
+          return (<OptionText onClick={option.action} key={index}>
+            {option.description}
+          </OptionText>)
+        })
+      }
+      <SpacerWithLine />
       <OptionText onClick={saveGame}><i className="ra ra-save" /> Save to browser</OptionText>
-      <Spacer />
+      <SpacerWithLine />
       <OptionText onClick={() => setShowResetInput((previous) => !previous)}><i className="ra ra-bone-bite" /> Restart game with a new world</OptionText>
       {showResetInput && (
         <div>
