@@ -60,10 +60,17 @@ export const generateTavern = (): TavernType => {
     size: randomSize,
     rooms: roomAmount,
     feature: randomFeature,
-    options: [{
-      type: 'move',
-      description: 'Leave the tavern',
-      action: () => console.log('placeholder - will want to call a dispatch here + update narrative in state')
-    }],
+    options: [
+      {
+        type: 'view',
+        description: 'View your surroundings',
+        action: () => console.log('Placeholder - dispatch to set narrative')
+      },
+      {
+        type: 'move',
+        description: 'Leave the tavern',
+        action: () => console.log('placeholder - will want to call a dispatch here + update narrative in state')
+      }
+    ],
   };
 };

@@ -66,6 +66,18 @@ const generateNewGame = (): GameStateType => {
 
   return {
     player: player,
+    narrative: {
+      mainNarrative: {
+        text: 'Welcome to the game! Narrative text will be written here.',
+        colour: 'black'
+      },
+      notifications: [{
+        text:'second line test!',
+        colour: 'red'},{
+          text: 'third line test!',
+          colour: 'blue'
+        }]
+    },
     npcs: npcs,
     locations: locations,
   };

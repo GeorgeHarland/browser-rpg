@@ -1,5 +1,6 @@
 export type GameStateType = {
   player: PlayerType;
+  narrative: NarrativeType;
   npcs: NpcType[];
   locations: LocationType[];
 }
@@ -7,6 +8,7 @@ export type GameStateType = {
 export type GameAction = 
   | {type: 'LOAD_STATE'; stateToLoad: GameStateType}
   | { type: 'UPDATE_GOLD'; amount: number }
+  | { type: 'UPDATE_MAIN_NARRATIVE'; newNarrative: NarrativeLine}
   | { type: 'UPDATE_PLAYER_HP'; amount: number }
   // | { type: 'ADD_NPC'; npc: NpcType }
 
@@ -20,6 +22,16 @@ export type PlayerType = {
   exp: number;
   inventory: ItemType[];
   currentLocation: number;
+}
+
+export type NarrativeType = {
+  mainNarrative: NarrativeLine;
+  notifications: NarrativeLine[];
+}
+
+export type NarrativeLine = {
+  text: string;
+  colour: 'blue' | 'black' | 'red';
 }
 
 export type NpcType = {

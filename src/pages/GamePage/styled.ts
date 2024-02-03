@@ -13,6 +13,10 @@ export const Spacer = styled.div`
   margin: 1.5rem 0;
 `;
 
+export const NarrativeLine = styled.i<{textcolour: string}>`
+  color: ${props => props.textcolour};
+`
+
 export const OptionText = styled.div`
   color: blue;
   cursor: pointer;
