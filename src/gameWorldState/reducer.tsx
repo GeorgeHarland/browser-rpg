@@ -5,13 +5,13 @@ const gameReducer = (
   action: GameAction
 ): GameStateType => {
   switch (action.type) {
-    case "ADD_OPTIONS_TO_STATE":
-      return {
-        ...state,
-        options: { ...state.options, ...action.optionsToAdd },
-      };
     case "LOAD_STATE":
       return action.stateToLoad;
+    case "SAVE_OPTIONS_TO_STATE":
+      return {
+        ...state,
+        options: { ...action.optionsToAdd },
+      };
     case "SPEAK_TO_NPC":
       return {
         ...state,
