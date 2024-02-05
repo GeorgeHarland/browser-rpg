@@ -1,28 +1,28 @@
-import { SizeKeys, TavernType } from "../types";
+import { SizeKeys, LocationType } from "../types";
 
 const tavernNameAdjectives = [
-  'Crimson',
-  'Emerald',
-  'Sapphire',
-  'Topaz',
-  'Golden',
+  "Crimson",
+  "Emerald",
+  "Sapphire",
+  "Topaz",
+  "Golden",
 ];
 
-const tavernNameNouns = ['Gryphon', 'Dragon', 'Zombie', 'Hedgehog', 'Gnome'];
+const tavernNameNouns = ["Gryphon", "Dragon", "Zombie", "Hedgehog", "Gnome"];
 
-const tavernSizes: SizeKeys[] = ['small', 'medium', 'large', 'huge'];
+const tavernSizes: SizeKeys[] = ["small", "medium", "large", "huge"];
 
 const tavernFeatures = [
-  'Elven Architecture',
-  'Dwarvish Architecture',
-  'Famous Owner',
-  'Famous Chef',
-  'Rare Meats',
-  'Historical Significance',
-  'Talking Parrots',
+  "Elven Architecture",
+  "Dwarvish Architecture",
+  "Famous Owner",
+  "Famous Chef",
+  "Rare Meats",
+  "Historical Significance",
+  "Talking Parrots",
 ];
 
-export const generateTavern = (): TavernType => {
+export const generateTavern = (): LocationType => {
   const randomAdjective =
     tavernNameAdjectives[
       Math.floor(Math.random() * tavernNameAdjectives.length)
@@ -38,16 +38,16 @@ export const generateTavern = (): TavernType => {
     tavernSizes[Math.floor(Math.random() * tavernSizes.length)];
   let roomAmount = 0;
   switch (randomSize) {
-    case 'small':
+    case "small":
       roomAmount = Math.floor(Math.random() * 3) + 3; // 3-5
       break;
-    case 'medium':
+    case "medium":
       roomAmount = Math.floor(Math.random() * 4) + 5; // 5-8
       break;
-    case 'large':
+    case "large":
       roomAmount = Math.floor(Math.random() * 4) + 7; // 7-10
       break;
-    case 'huge':
+    case "huge":
       roomAmount = Math.floor(Math.random() * 6) + 11; // 11-16
       break;
     default:
@@ -57,20 +57,9 @@ export const generateTavern = (): TavernType => {
   return {
     id: 1,
     name: randomName,
+    locationType: "tavern",
     size: randomSize,
     rooms: roomAmount,
     feature: randomFeature,
-    options: [
-      {
-        type: 'view',
-        description: 'View your surroundings',
-        action: () => console.log('Placeholder - dispatch to set narrative')
-      },
-      {
-        type: 'move',
-        description: 'Leave the tavern',
-        action: () => console.log('placeholder - will want to call a dispatch here + update narrative in state')
-      }
-    ],
   };
 };

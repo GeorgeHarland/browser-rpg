@@ -1,35 +1,42 @@
-import { AncestryKeys, NpcType, PersonalityKeys, ProfessionKeys, ancestriesRecord, professionsRecord } from "../types";
+import {
+  AncestryKeys,
+  NpcType,
+  PersonalityKeys,
+  ProfessionKeys,
+  ancestriesRecord,
+  professionsRecord,
+} from "../types";
 
 const firstNames = [
-  'Alison',
-  'Annie',
-  'Elian',
-  'Grum',
-  'Ilia',
-  'Jerrick',
-  'Merrick',
-  'Pila',
-  'Rolf',
-  'Saran',
-  'Semand',
-  'Thormak',
-  'Ulfrid',
-  'Weslin',
-  'Zaylin'
+  "Alison",
+  "Annie",
+  "Elian",
+  "Grum",
+  "Ilia",
+  "Jerrick",
+  "Merrick",
+  "Pila",
+  "Rolf",
+  "Saran",
+  "Semand",
+  "Thormak",
+  "Ulfrid",
+  "Weslin",
+  "Zaylin",
 ];
 
 const secondNames = [
-  'Altan',
-  'Brambleshack',
-  'Cravenwood',
-  'Elkland',
-  'Elnak',
-  'Espelian',
-  'Fearsprig',
-  'Helmrock',
-  'Humbletree',
-  'Tintann',
-  'Underhill',
+  "Altan",
+  "Brambleshack",
+  "Cravenwood",
+  "Elkland",
+  "Elnak",
+  "Espelian",
+  "Fearsprig",
+  "Helmrock",
+  "Humbletree",
+  "Tintann",
+  "Underhill",
 ];
 
 export const generateNpc = (): NpcType => {
@@ -52,11 +59,15 @@ export const generateNpc = (): NpcType => {
 
   const profKeys = Object.keys(professionsRecord);
   const randomPrIndex = Math.floor(Math.random() * profKeys.length);
-  const randomProfession: ProfessionKeys = profKeys[randomPrIndex] as ProfessionKeys;
+  const randomProfession: ProfessionKeys = profKeys[
+    randomPrIndex
+  ] as ProfessionKeys;
 
   const perKeys = Object.keys(ancestriesRecord);
   const randomPeIndex = Math.floor(Math.random() * perKeys.length);
-  const randomPersonality: PersonalityKeys = ansKeys[randomPeIndex] as PersonalityKeys;
+  const randomPersonality: PersonalityKeys = ansKeys[
+    randomPeIndex
+  ] as PersonalityKeys;
 
   return {
     firstName: randomFirst,
@@ -67,7 +78,9 @@ export const generateNpc = (): NpcType => {
     currentHp: ancestriesRecord[randomAncestry].baseMaxHp,
     maxHp: ancestriesRecord[randomAncestry].baseMaxHp,
     mana: 0,
-    gold: Math.floor(Math.random() * professionsRecord[randomProfession].incomeFactor),
+    gold: Math.floor(
+      Math.random() * professionsRecord[randomProfession].incomeFactor
+    ),
     inventory: [],
     currentLocation: 1,
   };

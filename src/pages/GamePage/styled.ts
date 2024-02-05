@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const ZoneTitle = styled.div`
   font-size: 28px;
@@ -13,9 +13,9 @@ export const Spacer = styled.div`
   margin: 1.5rem 0;
 `;
 
-export const NarrativeLine = styled.i<{textcolour: string}>`
-  color: ${props => props.textcolour};
-`
+export const NarrativeLine = styled.i<{ textcolour: string }>`
+  color: ${(props) => props.textcolour};
+`;
 
 export const OptionText = styled.div`
   color: blue;

@@ -1,33 +1,42 @@
 import { GameAction, GameStateType } from "../types";
 
-const gameReducer = (state: GameStateType, action: GameAction): GameStateType => {
+const gameReducer = (
+  state: GameStateType,
+  action: GameAction
+): GameStateType => {
   switch (action.type) {
-    case 'ADD_OPTIONS_TO_STATE':
+    case "ADD_OPTIONS_TO_STATE":
       return {
         ...state,
-        options: { ...state.options, ...action.optionsToAdd }
-      }
-    case 'LOAD_STATE':
-      return action.stateToLoad;
-    case 'SPEAK_TO_NPC':
-      return {
-        ...state,
-        narrative: { ...state.narrative, mainNarrative: { text: action.npcDialogue, colour: 'black' }}
-      }
-    case 'UPDATE_GOLD':
-      return {
-        ...state,
-        player: { ...state.player, gold: state.player.gold + action.amount }
+        options: { ...state.options, ...action.optionsToAdd },
       };
-    case 'UPDATE_MAIN_NARRATIVE':
+    case "LOAD_STATE":
+      return action.stateToLoad;
+    case "SPEAK_TO_NPC":
       return {
         ...state,
-        narrative: { ...state.narrative, mainNarrative: action.newNarrative }
-      }
-    case 'UPDATE_PLAYER_HP':
+        narrative: {
+          ...state.narrative,
+          mainNarrative: { text: action.npcDialogue, colour: "black" },
+        },
+      };
+    case "UPDATE_GOLD":
       return {
         ...state,
-        player: {...state.player, currentHp: state.player.currentHp + action.amount}
+        player: { ...state.player, gold: state.player.gold + action.amount },
+      };
+    case "UPDATE_MAIN_NARRATIVE":
+      return {
+        ...state,
+        narrative: { ...state.narrative, mainNarrative: action.newNarrative },
+      };
+    case "UPDATE_PLAYER_HP":
+      return {
+        ...state,
+        player: {
+          ...state.player,
+          currentHp: state.player.currentHp + action.amount,
+        },
       };
     default:
       return state;
