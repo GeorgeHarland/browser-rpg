@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import 'rpg-awesome/css/rpg-awesome.min.css';
 import { NarrativeLine, OptionText, Spacer, SpacerWithLine, ZoneTitle } from './styled';
 import { GameStateType, OptionType, TavernType, ancestriesRecord } from '../../types';
@@ -23,7 +23,7 @@ const GamePage = () => {
     window.location.reload();
   }
 
-  const updateGold = useCallback((changeAmount: number) => {
+  const updateGold = (changeAmount: number) => {
     dispatch?.({type: 'UPDATE_GOLD', amount: changeAmount});
     console.log(narrative.mainNarrative.text)
     if (narrative.mainNarrative.text === 'Your gold has changed.') {
@@ -31,7 +31,7 @@ const GamePage = () => {
     } else {
       dispatch?.({type: 'UPDATE_MAIN_NARRATIVE', newNarrative: {text: 'Your gold has changed.', colour: 'black'}});
     }
-  }, [narrative, dispatch]);
+  };
 
   const speakToNpc = () => {
       dispatch?.({type: 'UPDATE_MAIN_NARRATIVE', newNarrative: {text: "I don't want to talk right now.", colour: 'black'}});
@@ -67,7 +67,7 @@ const GamePage = () => {
 
   useEffect(() => {
     setOptions(generateOptions());
-  }, [])
+  }, [narrative, npcs, locations, player])
 
   return (
     <div style={{ padding: '20px' }}>
