@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import 'rpg-awesome/css/rpg-awesome.min.css';
 import { NarrativeLine, OptionText, Spacer, SpacerWithLine, ZoneTitle } from './styled';
 import { GameStateType, OptionType, TavernType, ancestriesRecord } from '../../types';
@@ -9,8 +9,33 @@ const GamePage = () => {
   const dispatch = useContext(GameContext)?.dispatch;
   const [showResetInput, setShowResetInput] = useState(false);
   if(!gameState) return <div>Loading...</div>;
-  const { player, narrative, npcs, locations }: GameStateType = gameState;
+  let { player, npcs, narrative, locations }: GameStateType = gameState;
   const tavern = locations[0] as TavernType;
+  const [options, setOptions] = useState<OptionType[]>([]);
+
+  const saveGame = () => {
+    localStorage.setItem('gameState', JSON.stringify(gameState));
+    dispatch?.({type: 'UPDATE_MAIN_NARRATIVE', newNarrative: {text: "Game saved.", colour: 'black'}});
+  }
+
+  const fullyResetGame = () => {
+    localStorage.removeItem('gameState');
+    window.location.reload();
+  }
+
+  const updateGold = useCallback((changeAmount: number) => {
+    dispatch?.({type: 'UPDATE_GOLD', amount: changeAmount});
+    console.log(narrative.mainNarrative.text)
+    if (narrative.mainNarrative.text === 'Your gold has changed.') {
+      dispatch?.({type: 'UPDATE_MAIN_NARRATIVE', newNarrative: {text: 'Your gold has changed. Again.', colour: 'black'}});
+    } else {
+      dispatch?.({type: 'UPDATE_MAIN_NARRATIVE', newNarrative: {text: 'Your gold has changed.', colour: 'black'}});
+    }
+  }, [narrative, dispatch]);
+
+  const speakToNpc = () => {
+      dispatch?.({type: 'UPDATE_MAIN_NARRATIVE', newNarrative: {text: "I don't want to talk right now.", colour: 'black'}});
+  };
 
   const generateOptions = (): OptionType[] => {
     // current player options: general (always allowed) + location specific + talk to any npc in the location
@@ -40,28 +65,9 @@ const GamePage = () => {
     return [askGold, giveGold, spacer, ...npcOptions, spacer, ...locationOptions];
   }
 
-  const updateGold = (changeAmount: number) => {
-    dispatch?.({type: 'UPDATE_GOLD', amount: changeAmount});
-    if (narrative.mainNarrative.text.includes('Your gold has changed.')) {
-      dispatch?.({type: 'UPDATE_MAIN_NARRATIVE', newNarrative: {text: 'Your gold has changed. Again.', colour: 'black'}});
-    } else {
-      dispatch?.({type: 'UPDATE_MAIN_NARRATIVE', newNarrative: {text: 'Your gold has changed.', colour: 'black'}});
-    }
-  };
-
-  const speakToNpc = () => {
-      dispatch?.({type: 'UPDATE_MAIN_NARRATIVE', newNarrative: {text: "I don't want to talk right now.", colour: 'black'}});
-  };
-
-  const saveGame = () => {
-    localStorage.setItem('gameState', JSON.stringify(gameState));
-    dispatch?.({type: 'UPDATE_MAIN_NARRATIVE', newNarrative: {text: "Game saved.", colour: 'black'}});
-}
-
-  const fullyResetGame = () => {
-    localStorage.removeItem('gameState');
-    window.location.reload();
-  }
+  useEffect(() => {
+    setOptions(generateOptions());
+  }, [])
 
   return (
     <div style={{ padding: '20px' }}>
@@ -78,7 +84,7 @@ const GamePage = () => {
       </div>
       <SpacerWithLine />
       {
-        generateOptions().map((option, i) => {
+        options.map((option, i) => {
           if(option.type === 'spacer') return <Spacer />
           return (<OptionText onClick={option.action} key={i}>
             {option.description}

@@ -1,4 +1,3 @@
-// GameContext.js
 import { createContext, useEffect, ReactNode, useReducer } from 'react';
 import { GameAction, GameStateType, NpcType } from '../types';
 import { generateTavern } from '../generationFunctions/generateTavern';
@@ -78,9 +77,10 @@ const generateNewGame = (): GameStateType => {
           colour: 'blue'
         }]
     },
+    options: [],
     npcs: npcs,
     locations: locations,
-  };
+  } as GameStateType;
 }
 
 const isValidGameState = (parsedState: GameStateType) => {
@@ -108,5 +108,34 @@ const isValidGameState = (parsedState: GameStateType) => {
 
     return validPlayer && validNpcs && validLocations;
 }
+
+// const generateOptions = (gameState: GameStateType): OptionType[] => {
+//   // current player options: general (always allowed) + location specific + talk to any npc in the location
+//   const {player, npcs, locations} = gameState;
+//   const playerLocation = locations.find(loc => loc.id === player.currentLocation);
+//   const npcsInLocation = npcs.filter(npc => npc.currentLocation === player.currentLocation);
+//   const locationOptions = playerLocation?.options || [];
+//   const npcOptions = npcsInLocation.map(npc => ({
+//     type: 'npc',
+//     description: `Speak to ${npc.firstName} ${npc.lastName}, a ${ancestriesRecord[npc.ancestry].adj}${' '}
+//     ${npc.profession}`,
+//     action: (dispatch: React.Dispatch<GameAction>) => () => dispatch({type: 'SPEAK_TO_NPC', npcDialogue: "I don't want to talk right now."})
+//   }));
+//   const spacer = {
+//     type: 'spacer',
+//     description: '',
+//   } 
+//   const askGold = {
+//     type: 'gold',
+//     description: 'Ask for 1 gold',
+//     action: (dispatch: React.Dispatch<GameAction>) => () => dispatch({type: 'UPDATE_GOLD', amount: 1})
+//   }
+//   const giveGold = {
+//     type: 'gold',
+//     description: 'Give away 1 gold',
+//     action: (dispatch: React.Dispatch<GameAction>) => () => dispatch({type: 'UPDATE_GOLD', amount: -1})
+//   }
+//   return [askGold, giveGold, spacer, ...npcOptions, spacer, ...locationOptions];
+// }
 
 export default GameContext;

@@ -1,12 +1,15 @@
 export type GameStateType = {
   player: PlayerType;
   narrative: NarrativeType;
+  options: OptionType[];
   npcs: NpcType[];
   locations: LocationType[];
 }
 
 export type GameAction = 
+  | {type: 'ADD_OPTIONS_TO_STATE'; optionsToAdd: OptionType[]}
   | {type: 'LOAD_STATE'; stateToLoad: GameStateType}
+  | {type: 'SPEAK_TO_NPC'; npcDialogue: string}
   | { type: 'UPDATE_GOLD'; amount: number }
   | { type: 'UPDATE_MAIN_NARRATIVE'; newNarrative: NarrativeLine}
   | { type: 'UPDATE_PLAYER_HP'; amount: number }
