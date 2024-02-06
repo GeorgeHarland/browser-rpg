@@ -44,15 +44,6 @@ export const generateNpc = (): NpcType => {
   const randomSecond =
     secondNames[Math.floor(Math.random() * secondNames.length)];
 
-  // let professionObj;
-  // if (profession) {
-  //   professionObj = professions[profession];
-  // } else {
-  //   const profKeys = Object.keys(professions);
-  //   professionObj =
-  //     professions[profKeys[Math.floor(Math.random() * profKeys.length)]];
-  // }
-
   const ansKeys = Object.keys(ancestriesRecord);
   const randomAnIndex = Math.floor(Math.random() * ansKeys.length);
   const randomAncestry: AncestryKeys = ansKeys[randomAnIndex] as AncestryKeys;

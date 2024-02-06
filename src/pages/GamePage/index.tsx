@@ -77,10 +77,6 @@ const GamePage = () => {
   };
 
   const generateOptions = (): OptionType[] => {
-    // if(gameState.options.length > 1) {
-    //   console.log(gameState?.options)
-    //   return gameState.options
-    // } else {
       const playerLocation = locations.find(
         (loc) => loc.id === player.currentLocation
       );

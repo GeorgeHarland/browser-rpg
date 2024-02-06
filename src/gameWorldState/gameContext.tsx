@@ -114,9 +114,9 @@ const isValidGameState = (parsedState: GameStateType) => {
       (loc: any) =>
         typeof loc.id === "number" &&
         typeof loc.name === "string" &&
-        Array.isArray(loc.options)
+        typeof loc.locationType === "string"
     );
-
+  console.log("Validation check on generation: ", validPlayer, validNpcs, validLocations)
   return validPlayer && validNpcs && validLocations;
 };
 
