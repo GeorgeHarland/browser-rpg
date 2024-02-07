@@ -1,9 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import {
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
 import GamePage from "./pages/GamePage";
 import { GameProvider } from "./gameWorldState/gameContext";

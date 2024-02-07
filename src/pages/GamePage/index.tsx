@@ -37,7 +37,7 @@ const GamePage = () => {
         type: "UPDATE_MAIN_NARRATIVE",
         newNarrative: { text: "Game saved.", colour: "black" },
       });
-  
+
       setSaveRequest(false);
     }
   }, [saveRequest]);
@@ -77,35 +77,35 @@ const GamePage = () => {
   };
 
   const generateOptions = (): OptionType[] => {
-      const playerLocation = locations.find(
-        (loc) => loc.id === player.currentLocation
-      );
-      const locationOptions: OptionType[] = [];
-      if (playerLocation?.locationType === "tavern") {
-        locationOptions.push({
-          type: "location",
-          description: "View surroundings",
-          action: () =>
-            dispatch?.({
-              type: "UPDATE_MAIN_NARRATIVE",
-              newNarrative: {
-                text: `
+    const playerLocation = locations.find(
+      (loc) => loc.id === player.currentLocation
+    );
+    const locationOptions: OptionType[] = [];
+    if (playerLocation?.locationType === "tavern") {
+      locationOptions.push({
+        type: "location",
+        description: "View surroundings",
+        action: () =>
+          dispatch?.({
+            type: "UPDATE_MAIN_NARRATIVE",
+            newNarrative: {
+              text: `
           This tavern is ${playerLocation.size} sized. It is known for it's ${playerLocation.feature}.
           `,
-                colour: "black",
-              },
-            }),
-        });
-        locationOptions.push({
-          type: "location",
-          description: "Leave tavern",
-          action: () =>
-            dispatch?.({
-              type: "UPDATE_MAIN_NARRATIVE",
-              newNarrative: { text: "You cannot leave yet.", colour: "black" },
-            }),
-        });
-      }
+              colour: "black",
+            },
+          }),
+      });
+      locationOptions.push({
+        type: "location",
+        description: "Leave tavern",
+        action: () =>
+          dispatch?.({
+            type: "UPDATE_MAIN_NARRATIVE",
+            newNarrative: { text: "You cannot leave yet.", colour: "black" },
+          }),
+      });
+    }
 
     const npcsInLocation = npcs.filter(
       (npc) => npc.currentLocation === player.currentLocation
@@ -139,7 +139,7 @@ const GamePage = () => {
       spacer,
       ...locationOptions,
     ];
-  }
+  };
   // };
 
   useEffect(() => {
