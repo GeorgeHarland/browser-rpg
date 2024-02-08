@@ -27,22 +27,22 @@ export const GameProvider = ({ children }: Props) => {
 
 const initializeGame = () => {
   const savedState = localStorage.getItem("gameState");
-    if (savedState) {
-      const parsedState = JSON.parse(savedState) as GameStateType;
-      if (validateGameState(parsedState)) {
-        return parsedState
-      } else {
-        return generateFakeGame();
-      }
+  if (savedState) {
+    const parsedState = JSON.parse(savedState) as GameStateType;
+    if (validateGameState(parsedState)) {
+      return parsedState;
     } else {
       return generateFakeGame();
     }
+  } else {
+    return generateFakeGame();
+  }
 };
 
 const generateFakeGame = () => {
   return {
     player: {
-      firstName: 'REDIRECT_COMMAND',
+      firstName: "REDIRECT_COMMAND",
       lastName: "Karnos",
       currentHp: 10,
       maxHp: 10,
@@ -55,24 +55,14 @@ const generateFakeGame = () => {
     narrative: {
       mainNarrative: {
         text: "You should not be seeing this. Please redirect to the home page and generate a new world.",
-        colour: "black",
+        colour: "red",
       },
-      notifications: [
-        {
-          text: "second line test!",
-          colour: "red",
-        },
-        {
-          text: "third line test!",
-          colour: "blue",
-        },
-      ],
+      notifications: [],
     },
     options: [],
     npcs: [],
     locations: [generateTavern()],
   } as GameStateType;
 };
-
 
 export default GameContext;

@@ -4,7 +4,10 @@ import { generateTavern } from "./generateTavern";
 
 // Accepts optional player name arguments
 
-export const generateNewGame = (playerFirstName: string = 'Tom', playerLastName: string = 'Karnos'): GameStateType => {
+export const generateNewGame = (
+  playerFirstName: string = "Tom",
+  playerLastName: string = "Karnos"
+): GameStateType => {
   const locations = [];
   locations.push(generateTavern());
 

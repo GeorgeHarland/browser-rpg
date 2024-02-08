@@ -38,7 +38,7 @@ const GamePage = () => {
       localStorage.setItem("gameState", JSON.stringify(gameState));
       dispatch?.({
         type: "UPDATE_MAIN_NARRATIVE",
-        newNarrative: { text: "Game saved.", colour: "black" },
+        newNarrative: { text: "Game saved." },
       });
 
       setSaveRequest(false);
@@ -46,15 +46,18 @@ const GamePage = () => {
   }, [saveRequest]);
 
   useEffect(() => {
-    const savedState = localStorage.getItem("gameState")
-    if(!savedState) {
+    const savedState = localStorage.getItem("gameState");
+    if (!savedState) {
       navigate("/");
     }
-    if ((JSON.parse(savedState as string) as GameStateType).player.firstName === 'REDIRECT_COMMAND') {
-      navigate("/")
+    if (
+      (JSON.parse(savedState as string) as GameStateType).player.firstName ===
+      "REDIRECT_COMMAND"
+    ) {
+      navigate("/");
     }
     if (!validateGameState(JSON.parse(savedState as string))) {
-      navigate("/")
+      navigate("/");
     }
   }, []);
 
@@ -71,13 +74,12 @@ const GamePage = () => {
         type: "UPDATE_MAIN_NARRATIVE",
         newNarrative: {
           text: "Your gold has changed. Again.",
-          colour: "black",
         },
       });
     } else {
       dispatch?.({
         type: "UPDATE_MAIN_NARRATIVE",
-        newNarrative: { text: "Your gold has changed.", colour: "black" },
+        newNarrative: { text: "Your gold has changed." },
       });
     }
   };
@@ -87,7 +89,6 @@ const GamePage = () => {
       type: "UPDATE_MAIN_NARRATIVE",
       newNarrative: {
         text: "I don't want to talk right now.",
-        colour: "black",
       },
     });
   };
@@ -108,7 +109,6 @@ const GamePage = () => {
               text: `
           This tavern is ${playerLocation.size} sized. It is known for it's ${playerLocation.feature}.
           `,
-              colour: "black",
             },
           }),
       });
@@ -118,7 +118,7 @@ const GamePage = () => {
         action: () =>
           dispatch?.({
             type: "UPDATE_MAIN_NARRATIVE",
-            newNarrative: { text: "You cannot leave yet.", colour: "black" },
+            newNarrative: { text: "You cannot leave yet." },
           }),
       });
     }
@@ -170,11 +170,11 @@ const GamePage = () => {
       <p>{player.gold}g</p>
       <SpacerWithLine />
       <div style={{ display: "flex", flexDirection: "column" }}>
-        <NarrativeLine textcolour={narrative.mainNarrative.colour}>
+        <NarrativeLine textcolour={narrative.mainNarrative.colour || "black"}>
           {narrative.mainNarrative.text}
         </NarrativeLine>
         {narrative.notifications.map((notification, i) => (
-          <NarrativeLine key={i} textcolour={notification.colour}>
+          <NarrativeLine key={i} textcolour={notification.colour || "black"}>
             {notification.text}
           </NarrativeLine>
         ))}

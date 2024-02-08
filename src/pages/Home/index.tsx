@@ -16,12 +16,12 @@ const Home = () => {
     dispatch?.({ type: "LOAD_STATE", stateToLoad: newGame });
     localStorage.setItem("gameState", JSON.stringify(newGame));
     navigate("/game");
-  }
+  };
 
   useEffect(() => {
-    const savedState = localStorage.getItem("gameState")
+    const savedState = localStorage.getItem("gameState");
     if (validateGameState(JSON.parse(savedState as string))) {
-      navigate("/game")
+      navigate("/game");
     }
   }, []);
 
@@ -32,14 +32,14 @@ const Home = () => {
       <div>
         <input
           type="text"
-          placeholder="Enter your first name"
+          placeholder="Character First Name"
           value={playerFirstName}
           onChange={(e) => setPlayerFirstName(e.target.value)}
         />
         <br />
         <input
           type="text"
-          placeholder="Enter your last name"
+          placeholder="Character Last Name"
           value={playerLastName}
           onChange={(e) => setPlayerLastName(e.target.value)}
         />

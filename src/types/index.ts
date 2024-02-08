@@ -15,7 +15,6 @@ export type GameAction =
   | { type: "UPDATE_GOLD"; amount: number }
   | { type: "UPDATE_MAIN_NARRATIVE"; newNarrative: NarrativeLine }
   | { type: "UPDATE_PLAYER_HP"; amount: number };
-// | { type: 'ADD_NPC'; npc: NpcType }
 
 export type PlayerType = {
   firstName: string;
@@ -36,7 +35,7 @@ export type NarrativeType = {
 
 export type NarrativeLine = {
   text: string;
-  colour: "blue" | "black" | "red";
+  colour?: "blue" | "black" | "red";
 };
 
 export type NpcType = {
