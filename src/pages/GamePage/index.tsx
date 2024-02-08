@@ -23,7 +23,7 @@ const GamePage = () => {
   const dispatch = useContext(GameContext)?.dispatch;
   const [showResetInput, setShowResetInput] = useState(false);
   if (!gameState) return <div>Loading...</div>;
-  let { player, npcs, narrative, locations }: GameStateType = gameState;
+  const { player, npcs, narrative, locations }: GameStateType = gameState;
   const tavern = locations[0] as LocationType;
   const [options, setOptions] = useState<OptionType[]>([]);
   const [saveRequest, setSaveRequest] = useState(false);
@@ -163,46 +163,53 @@ const GamePage = () => {
   }, [narrative, npcs, locations, player]);
 
   return (
-    <div style={{ padding: "20px" }}>
-      <ZoneTitle>{tavern.name}</ZoneTitle>
-      <SpacerWithLine />
-      <p>HP: {player.currentHp}</p>
-      <p>{player.gold}g</p>
-      <SpacerWithLine />
-      <div style={{ display: "flex", flexDirection: "column" }}>
-        <NarrativeLine textcolour={narrative.mainNarrative.colour || "black"}>
-          {narrative.mainNarrative.text}
-        </NarrativeLine>
-        {narrative.notifications.map((notification, i) => (
-          <NarrativeLine key={i} textcolour={notification.colour || "black"}>
-            {notification.text}
-          </NarrativeLine>
-        ))}
-      </div>
-      <SpacerWithLine />
-      {options.map((option, i) => {
-        if (option.type === "spacer") return <Spacer />;
-        return (
-          <OptionText onClick={option.action} key={i}>
-            {option.description}
-          </OptionText>
-        );
-      })}
-      <SpacerWithLine />
-      <OptionText onClick={saveGame}>
-        <i className="ra ra-save" /> Save to browser
-      </OptionText>
-      <SpacerWithLine />
-      <OptionText onClick={() => setShowResetInput((previous) => !previous)}>
-        <i className="ra ra-bone-bite" /> Restart game with a new world
-      </OptionText>
-      {showResetInput && (
-        <div>
-          <OptionText onClick={fullyResetGame}>
-            Are you sure? This world will be deleted.
-          </OptionText>
+    <div style={{ display: "flex" }}>
+      <div style={{ padding: "20px" }}>
+        <div style={{ display: "flex", gap: "10px" }}>
+          <p style={{ color: "crimson" }}>
+            HP: {player.currentHp} / {player.maxHp}
+          </p>
+          <p style={{ color: "navy" }}>Mana: {player.mana}</p>
         </div>
-      )}
+        <p style={{ color: "brown" }}>{player.gold}g</p>
+        <SpacerWithLine />
+        {options.map((option, i) => {
+          if (option.type === "spacer") return <Spacer />;
+          return (
+            <OptionText onClick={option.action} key={i}>
+              {option.description}
+            </OptionText>
+          );
+        })}
+        <SpacerWithLine />
+        <OptionText onClick={saveGame}>
+          <i className="ra ra-save" /> Save to browser
+        </OptionText>
+        <Spacer />
+        <OptionText onClick={() => setShowResetInput((previous) => !previous)}>
+          <i className="ra ra-bone-bite" /> Restart game with a new world
+        </OptionText>
+        {showResetInput && (
+          <div>
+            <OptionText onClick={fullyResetGame}>
+              Are you sure? This world will be deleted.
+            </OptionText>
+          </div>
+        )}
+        <SpacerWithLine />
+      </div>
+        <div style={{ display: "flex", flexDirection: "column", gap:"10px", padding: "20px", maxWidth: "600px" }}>
+        <ZoneTitle>{tavern.name}</ZoneTitle>
+        <SpacerWithLine />
+          <NarrativeLine textcolour={narrative.mainNarrative.colour || "black"}>
+            {narrative.mainNarrative.text}
+          </NarrativeLine>
+          {narrative.notifications.map((notification, i) => (
+            <NarrativeLine key={i} textcolour={notification.colour || "black"}>
+              {notification.text}
+            </NarrativeLine>
+          ))}
+        </div>
     </div>
   );
 };

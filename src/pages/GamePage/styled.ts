@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 export const ZoneTitle = styled.div`
-  font-size: 28px;
+  font-size: 24px;
 `;
 
 export const SpacerWithLine = styled.div`

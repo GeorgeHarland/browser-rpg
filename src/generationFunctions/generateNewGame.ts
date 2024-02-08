@@ -30,17 +30,13 @@ export const generateNewGame = (
     player: player,
     narrative: {
       mainNarrative: {
-        text: "Welcome to the game! Narrative text will be written here.",
+        text: `Welcome to the game! Narrative text will be written here. You start at the ${locations[0].name} Tavern. You can interact with the world using the options on the left.`,
         colour: "black",
       },
       notifications: [
         {
-          text: "second line test!",
+          text: "Notifications will appear here!",
           colour: "red",
-        },
-        {
-          text: "third line test!",
-          colour: "blue",
         },
       ],
     },
