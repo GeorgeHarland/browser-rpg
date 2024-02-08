@@ -2,13 +2,15 @@ import { GameStateType } from "../types";
 import { generateNpc } from "./generateNpc";
 import { generateTavern } from "./generateTavern";
 
-export const generateNewGame = (): GameStateType => {
+// Accepts optional player name arguments
+
+export const generateNewGame = (playerFirstName: string = 'Tom', playerLastName: string = 'Karnos'): GameStateType => {
   const locations = [];
   locations.push(generateTavern());
 
   const player = {
-    firstName: "Tom",
-    lastName: "Karnos",
+    firstName: playerFirstName,
+    lastName: playerLastName,
     currentHp: 10,
     maxHp: 10,
     mana: 0,
