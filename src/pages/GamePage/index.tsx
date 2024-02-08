@@ -14,8 +14,11 @@ import {
   ancestriesRecord,
 } from "../../types";
 import GameContext from "../../gameWorldState/gameContext";
+import { useNavigate } from "react-router-dom";
+import { validateGameState } from "../../gameWorldState/validateState";
 
 const GamePage = () => {
+  const navigate = useNavigate();
   const gameState = useContext(GameContext)?.state;
   const dispatch = useContext(GameContext)?.dispatch;
   const [showResetInput, setShowResetInput] = useState(false);
@@ -41,6 +44,19 @@ const GamePage = () => {
       setSaveRequest(false);
     }
   }, [saveRequest]);
+
+  useEffect(() => {
+    const savedState = localStorage.getItem("gameState")
+    if(!savedState) {
+      navigate("/");
+    }
+    if ((JSON.parse(savedState as string) as GameStateType).player.firstName === 'REDIRECT_COMMAND') {
+      navigate("/")
+    }
+    if (!validateGameState(JSON.parse(savedState as string))) {
+      navigate("/")
+    }
+  }, []);
 
   const fullyResetGame = () => {
     localStorage.removeItem("gameState");

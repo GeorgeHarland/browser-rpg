@@ -1,3 +1,5 @@
+// When changing GameState types, make sure to update the validateState function
+// in src/gameWorldState/validateState.ts
 export type GameStateType = {
   player: PlayerType;
   narrative: NarrativeType;
