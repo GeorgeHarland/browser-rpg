@@ -8,8 +8,10 @@ import {
   ZoneTitle,
 } from "./styled";
 import {
+  ActivityType,
   GameStateType,
   LocationType,
+  NpcType,
   OptionType,
   ancestriesRecord,
 } from "../../types";
@@ -39,6 +41,7 @@ const GamePage = () => {
       dispatch?.({
         type: "UPDATE_MAIN_NARRATIVE",
         newNarrative: { text: "Game saved." },
+        reset: true,
       });
 
       setSaveRequest(false);
@@ -66,34 +69,52 @@ const GamePage = () => {
     window.location.reload();
   };
 
-  const updateGold = (changeAmount: number) => {
+  const updateGold = (changeAmount: number, reset: boolean = true) => {
     dispatch?.({ type: "UPDATE_GOLD", amount: changeAmount });
-    console.log(narrative.mainNarrative.text);
-    if (narrative.mainNarrative.text === "Your gold has changed.") {
+    if (narrative.mainNarrative[0].text === "Your gold has changed.") {
       dispatch?.({
         type: "UPDATE_MAIN_NARRATIVE",
         newNarrative: {
           text: "Your gold has changed. Again.",
         },
+        reset: reset,
       });
     } else {
       dispatch?.({
         type: "UPDATE_MAIN_NARRATIVE",
         newNarrative: { text: "Your gold has changed." },
+        reset: reset,
       });
     }
   };
 
-  const speakToNpc = () => {
-    dispatch?.({
-      type: "UPDATE_MAIN_NARRATIVE",
-      newNarrative: {
-        text: "I don't want to talk right now.",
-      },
-    });
+  const speakToNpc = (npc: NpcType) => {
+    setOptions(generateOptions("dialogue", npc));
+    // dispatch?.({
+    //   type: "UPDATE_MAIN_NARRATIVE",
+    //   newNarrative: {
+    //     text: "I don't want to talk right now.",
+    //   },
+    // });
   };
 
-  const generateOptions = (): OptionType[] => {
+  const generateOptions = (nextActivity: ActivityType = "location", npc: NpcType | null = null): OptionType[] => {
+    switch(nextActivity) {
+      case "dialogue":
+        if(!npc) return [];
+        return generateNpcOptions(npc);
+      case "combat":
+        return [];
+      case "location":
+        return generateLocationOptions();
+      case "worldMap":
+        return [];
+      default:
+        return [];
+    }
+  };
+
+  const generateLocationOptions = (): OptionType[] => {
     const playerLocation = locations.find(
       (loc) => loc.id === player.currentLocation
     );
@@ -109,7 +130,7 @@ const GamePage = () => {
               text: `
           This tavern is ${playerLocation.size} sized. It is known for it's ${playerLocation.feature}.
           `,
-            },
+            }, reset: true
           }),
       });
       locationOptions.push({
@@ -119,6 +140,7 @@ const GamePage = () => {
           dispatch?.({
             type: "UPDATE_MAIN_NARRATIVE",
             newNarrative: { text: "You cannot leave yet." },
+            reset: true,
           }),
       });
     }
@@ -130,7 +152,7 @@ const GamePage = () => {
       type: "npc",
       description: `Speak to ${npc.firstName} ${npc.lastName}, a ${ancestriesRecord[npc.ancestry].adj}${" "}
       ${npc.profession}`,
-      action: () => speakToNpc(),
+      action: () => speakToNpc(npc),
     }));
 
     const spacer = {
@@ -155,8 +177,73 @@ const GamePage = () => {
       spacer,
       ...locationOptions,
     ];
-  };
-  // };
+  }
+
+  const generateNpcOptions = (npc: NpcType): OptionType[] => {
+    const options = [
+      {
+        type: "npc",
+        description: "Play dice game (roll 2d6) - 1 gold to play",
+        action: () => playDiceGame(npc),
+      },
+      {
+        type: "npc",
+        description: "Leave conversation",
+        action: () => setOptions(generateOptions("location")),
+      },
+    ]
+    return options;
+  }
+
+  const playDiceGame = (npc: NpcType) => {
+    const playerRoll1 = Math.floor(Math.random() * 6) + 1;
+    const playerRoll2 = Math.floor(Math.random() * 6) + 1;
+    const pTotal = playerRoll1 + playerRoll2;
+ 
+    dispatch?.({
+      type: "UPDATE_MAIN_NARRATIVE",
+      newNarrative: {
+        text: `You rolled a ${playerRoll1} and a ${playerRoll2}, totaling ${pTotal}.`,
+      },
+      reset: true,
+    });
+
+    const opponentRoll1 = Math.floor(Math.random() * 6) + 1;
+    const opponentRoll2 = Math.floor(Math.random() * 6) + 1;
+    const oTotal = opponentRoll1 + opponentRoll2;
+
+    dispatch?.({
+      type: "UPDATE_MAIN_NARRATIVE",
+      newNarrative: {
+        text: `${npc.firstName} rolled a ${opponentRoll1} and a ${opponentRoll2}, totaling ${oTotal}.`,
+      },
+    });
+
+    if(pTotal > oTotal) {
+      dispatch?.({
+        type: "UPDATE_MAIN_NARRATIVE",
+        newNarrative: {
+          text: `You win!`,
+        },
+      });
+      updateGold(1, false);
+    } else if(oTotal > pTotal) {
+      dispatch?.({
+        type: "UPDATE_MAIN_NARRATIVE",
+        newNarrative: {
+          text: `You lose!`,
+        },
+      });
+      updateGold(-1, false);
+    } else {
+      dispatch?.({
+        type: "UPDATE_MAIN_NARRATIVE",
+        newNarrative: {
+          text: `You both draw!`,
+        },
+      });
+    }  
+  }
 
   useEffect(() => {
     setOptions(generateOptions());
@@ -201,12 +288,14 @@ const GamePage = () => {
         <div style={{ display: "flex", flexDirection: "column", gap:"10px", padding: "20px", maxWidth: "600px" }}>
         <ZoneTitle>{tavern.name}</ZoneTitle>
         <SpacerWithLine />
-          <NarrativeLine textcolour={narrative.mainNarrative.colour || "black"}>
-            {narrative.mainNarrative.text}
-          </NarrativeLine>
-          {narrative.notifications.map((notification, i) => (
-            <NarrativeLine key={i} textcolour={notification.colour || "black"}>
-              {notification.text}
+          {narrative.mainNarrative.map((mainNarrative, i) => (
+            <NarrativeLine key={i} textcolour={mainNarrative.colour || "black"}>
+              {mainNarrative.text}
+            </NarrativeLine>
+          ))}
+          {narrative.notifications.map((notifications, i) => (
+            <NarrativeLine key={i} textcolour={notifications.colour || "black"}>
+              {notifications.text}
             </NarrativeLine>
           ))}
         </div>

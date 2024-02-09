@@ -12,24 +12,32 @@ const gameReducer = (
         ...state,
         options: { ...action.optionsToAdd },
       };
-    case "SPEAK_TO_NPC":
-      return {
-        ...state,
-        narrative: {
-          ...state.narrative,
-          mainNarrative: { text: action.npcDialogue, colour: "black" },
-        },
-      };
     case "UPDATE_GOLD":
       return {
         ...state,
         player: { ...state.player, gold: state.player.gold + action.amount },
       };
     case "UPDATE_MAIN_NARRATIVE":
-      return {
-        ...state,
-        narrative: { ...state.narrative, mainNarrative: action.newNarrative },
-      };
+      if(!action.reset)
+      {  return {
+          ...state,
+          narrative: {
+            ...state.narrative,
+            mainNarrative: [
+              ...state.narrative.mainNarrative,
+              action.newNarrative,
+            ],
+          },
+        };}
+      else {
+        return {
+          ...state,
+          narrative: {
+            ...state.narrative,
+            mainNarrative: [action.newNarrative],
+          },
+        };
+      }
     case "UPDATE_PLAYER_HP":
       return {
         ...state,
@@ -42,14 +50,5 @@ const gameReducer = (
       return state;
   }
 };
-
-// const updateGold = (changeAmount: number) => {
-//   dispatch?.({type: 'UPDATE_GOLD', amount: changeAmount});
-//   if (narrative.mainNarrative.text.includes('Your gold has changed.')) {
-//     dispatch?.({type: 'UPDATE_MAIN_NARRATIVE', newNarrative: {text: 'Your gold has changed. Again.', colour: 'black'}});
-//   } else {
-//     dispatch?.({type: 'UPDATE_MAIN_NARRATIVE', newNarrative: {text: 'Your gold has changed.', colour: 'black'}});
-//   }
-// };
 
 export default gameReducer;

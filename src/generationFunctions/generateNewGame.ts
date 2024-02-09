@@ -29,16 +29,11 @@ export const generateNewGame = (
   return {
     player: player,
     narrative: {
-      mainNarrative: {
+      mainNarrative: [{
         text: `Welcome to the game! Narrative text will be written here. You start at the ${locations[0].name} Tavern. You can interact with the world using the options on the left.`,
         colour: "black",
-      },
-      notifications: [
-        {
-          text: "Notifications will appear here!",
-          colour: "darkred",
-        },
-      ],
+      }],
+      notifications: [],
     },
     options: [],
     npcs: npcs,

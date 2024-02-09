@@ -53,10 +53,10 @@ const generateFakeGame = () => {
       currentLocation: 1,
     },
     narrative: {
-      mainNarrative: {
+      mainNarrative: [{
         text: "You should not be seeing this. Please redirect to the home page and generate a new world.",
         colour: "darkred",
-      },
+      }],
       notifications: [],
     },
     options: [],
