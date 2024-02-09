@@ -166,7 +166,7 @@ const GamePage = () => {
     <div style={{ display: "flex" }}>
       <div style={{ padding: "20px" }}>
         <div style={{ display: "flex", gap: "10px" }}>
-          <p style={{ color: "crimson" }}>
+          <p style={{ color: "darkred" }}>
             HP: {player.currentHp} / {player.maxHp}
           </p>
           <p style={{ color: "navy" }}>Mana: {player.mana}</p>

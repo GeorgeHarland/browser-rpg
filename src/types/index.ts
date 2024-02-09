@@ -35,7 +35,7 @@ export type NarrativeType = {
 
 export type NarrativeLine = {
   text: string;
-  colour?: "blue" | "black" | "red";
+  colour?: "black" | "darkred";
 };
 
 export type NpcType = {

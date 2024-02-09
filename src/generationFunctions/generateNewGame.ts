@@ -36,7 +36,7 @@ export const generateNewGame = (
       notifications: [
         {
           text: "Notifications will appear here!",
-          colour: "red",
+          colour: "darkred",
         },
       ],
     },
