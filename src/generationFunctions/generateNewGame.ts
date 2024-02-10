@@ -1,4 +1,4 @@
-import { GameStateType } from "../types";
+import { GameStateType, NpcType, TileType } from "../types";
 import { generateNpc } from "./generateNpc";
 import { generateTavern } from "./generateTavern";
 
@@ -8,8 +8,67 @@ export const generateNewGame = (
   playerFirstName: string = "Tom",
   playerLastName: string = "Karnos"
 ): GameStateType => {
-  const locations = [];
-  locations.push(generateTavern());
+  const worldSize = 100;
+  const taverns: TileType[] = [];
+  const npcs: NpcType[] = [];
+  const worldGrid: TileType[][] = [[],[]];
+
+  // generate world grid - either wastelands or taverns
+  for (let i = 0; i < worldSize; i++) {
+    worldGrid[i] = [];
+    for (let j = 0; j < worldSize; j++) {
+      const isTavern = Math.random() < 0.01;
+      if(isTavern) {
+        worldGrid[i][j] = generateTavern(i, j);
+      } else {
+        worldGrid[i][j] = {
+          id: Math.floor(Math.random() * 1000000),
+          name: 'Wasteland',
+          locationType: "generic",
+          x: i,
+          y: j,
+        };
+      }
+      if (isTavern) {
+        taverns.push(worldGrid[i][j]);
+      }
+    }
+  }
+
+  // at least one tavern must exist
+  if (taverns.length === 0) {
+    const x = Math.floor(Math.random() * worldSize);
+    const y = Math.floor(Math.random() * worldSize);
+    const tavern = generateTavern(x, y);
+    worldGrid[x][y] = tavern;
+    taverns.push(tavern);
+  }
+
+  // gen NPCs for each tavern, set starting loc to that tavern
+  taverns.forEach(tavern => {
+    if(tavern.locationType !== "tavern") return;
+    let npcCount = 0;
+    switch(tavern.size) {
+      case "small":
+        npcCount = Math.floor(Math.random() * 3) + 1; // 1-3
+        break;
+      case "medium":
+        npcCount = Math.floor(Math.random() * 3) + 2; // 2-4
+        break;
+      case "large":
+        npcCount = Math.floor(Math.random() * 4) + 3; // 3-6
+        break;
+      case "huge":
+        npcCount = Math.floor(Math.random() * 5) + 4; // 4-8
+        break;
+    }
+    for(let i = 0; i < npcCount; i++) {
+      const npc = generateNpc(tavern.x, tavern.y);
+      npcs.push(npc);
+    }
+  });
+  
+  const startingTavern = taverns[Math.floor(Math.random() * taverns.length)];
 
   const player = {
     firstName: playerFirstName,
@@ -20,23 +79,26 @@ export const generateNewGame = (
     gold: 10,
     exp: 0,
     inventory: [],
-    currentLocation: 1,
+    currentLocation: startingTavern.id,
+    x: startingTavern.x,
+    y: startingTavern.y,
   };
-
-  const npcs = [];
-  for (let i = 0; i < 3; i++) npcs.push(generateNpc());
 
   return {
     player: player,
     narrative: {
       mainNarrative: [{
-        text: `Welcome to the game! Narrative text will be written here. You start at the ${locations[0].name} Tavern. You can interact with the world using the options on the left.`,
+        text: `Welcome to the game! Narrative text will be written here. You start at the ${startingTavern.name} Tavern. You can interact with the world using the options on the left.
+        There are ${npcs.length} NPCs in the world, and ${taverns.length} taverns.`,
         colour: "black",
       }],
       notifications: [],
     },
     options: [],
     npcs: npcs,
-    locations: locations,
+    tiles: worldGrid,
+    otherInfo: {
+      startingTavern: startingTavern,
+    }
   } as GameStateType;
 };

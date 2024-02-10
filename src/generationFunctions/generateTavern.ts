@@ -1,4 +1,4 @@
-import { SizeKeys, LocationType } from "../types";
+import { SizeKeys, TileType } from "../types";
 
 const tavernNameAdjectives = [
   "Crimson",
@@ -22,7 +22,7 @@ const tavernFeatures = [
   "Talking Parrots",
 ];
 
-export const generateTavern = (): LocationType => {
+export const generateTavern = (x: number, y: number): TileType => {
   const randomAdjective =
     tavernNameAdjectives[
       Math.floor(Math.random() * tavernNameAdjectives.length)
@@ -55,11 +55,13 @@ export const generateTavern = (): LocationType => {
   }
 
   return {
-    id: 1,
+    id: Math.floor(Math.random() * 1000000),
     name: randomName,
     locationType: "tavern",
     size: randomSize,
     rooms: roomAmount,
     feature: randomFeature,
+    x: x,
+    y: y,
   };
 };

@@ -6,7 +6,10 @@ export type GameStateType = {
   narrative: NarrativeType;
   options: OptionType[];
   npcs: NpcType[];
-  locations: LocationType[];
+  tiles: TileType[][];
+  otherInfo: {
+    startingTavern: TileType;
+  }
 };
 
 export type GameAction =
@@ -27,7 +30,8 @@ export type PlayerType = {
   gold: number;
   exp: number;
   inventory: ItemType[];
-  currentLocation: number;
+  x: number;
+  y: number;
 };
 
 export type NarrativeType = {
@@ -55,6 +59,8 @@ export type NpcType = {
   inventory: ItemType[];
   currentLocation: number;
   dialogue: NpcDialogueType;
+  x: number;
+  y: number;
 };
 
 type NpcDialogueType = {
@@ -62,16 +68,25 @@ type NpcDialogueType = {
   defaultCloser: string;
 }
 
-export type LocationType =
-  | { id: number; name: string; locationType: "generic" }
+export type TileType = 
   | {
-      id: number;
-      name: string;
-      locationType: "tavern";
-      size: SizeKeys;
-      rooms: number;
-      feature: string;
-    };
+    id: number,
+    name: string,
+    locationType: "generic",
+    x: number,
+    y: number,
+  }
+  | {
+    id: number,
+    name: string,
+    locationType: "tavern",
+    size: SizeKeys;
+    rooms: number;
+    feature: string;
+    x: number,
+    y: number,
+  
+  }
 
 export type ItemType = {
   name: string;

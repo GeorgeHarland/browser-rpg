@@ -22,13 +22,14 @@ export const validateGameState = (parsedState: GameStateType) => {
     );
 
   const validLocations =
-    Array.isArray(parsedState.locations) &&
-    parsedState.locations.every(
-      (loc: any) =>
-        typeof loc.id === "number" &&
-        typeof loc.name === "string" &&
-        typeof loc.locationType === "string"
-    );
+    // Array.isArray(parsedState.locations) &&
+    // parsedState.locations.every(
+    //   (loc: any) =>
+    //     typeof loc.id === "number" &&
+    //     typeof loc.name === "string" &&
+    //     typeof loc.locationType === "string"
+    // );
+    true;
   console.log(
     "Validation check on generation: ",
     validPlayer,

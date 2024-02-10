@@ -77,7 +77,7 @@ const closers = [
   "Well that was a waste of time..."
 ]
 
-export const generateNpc = (): NpcType => {
+export const generateNpc = (x: number, y: number): NpcType => {
   const id = Math.floor(Math.random() * 1000000);
   const firstName = getRandomElement(firstNames);
   const lastName = getRandomElement(secondNames);
@@ -103,5 +103,7 @@ export const generateNpc = (): NpcType => {
       defaultOpener: getRandomElement(openers),
       defaultCloser: getRandomElement(closers),
     },
+    x: x,
+    y: y,
   };
 };

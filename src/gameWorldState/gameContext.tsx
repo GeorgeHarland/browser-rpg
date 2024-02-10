@@ -2,7 +2,6 @@ import { createContext, ReactNode, useReducer } from "react";
 import { GameAction, GameStateType } from "../types";
 import gameReducer from "./reducer";
 import { validateGameState } from "./validateState";
-import { generateTavern } from "../generationFunctions/generateTavern";
 
 type GameContextType = {
   state: GameStateType;
@@ -51,6 +50,8 @@ const generateFakeGame = () => {
       exp: 0,
       inventory: [],
       currentLocation: 1,
+      x: 0,
+      y: 0,
     },
     narrative: {
       mainNarrative: [{
@@ -61,7 +62,19 @@ const generateFakeGame = () => {
     },
     options: [],
     npcs: [],
-    locations: [generateTavern()],
+    tiles: [],
+    otherInfo: {
+      startingTavern: {
+        id: 0,
+        name: "ERROR",
+        locationType: "tavern",
+        size: "small",
+        rooms: 0,
+        feature: "ERROR",
+        x: 0,
+        y: 0,
+      },
+    },
   } as GameStateType;
 };
 

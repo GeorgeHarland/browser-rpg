@@ -11,7 +11,7 @@ import {
 import {
   ActivityType,
   GameStateType,
-  LocationType,
+  TileType,
   NpcType,
   OptionType,
   ancestriesRecord,
@@ -26,8 +26,8 @@ const GamePage = () => {
   const dispatch = useContext(GameContext)?.dispatch;
   const [showResetInput, setShowResetInput] = useState(false);
   if (!gameState) return <div>Loading...</div>;
-  const { player, npcs, narrative, locations }: GameStateType = gameState;
-  const tavern = locations[0] as LocationType;
+  const { player, npcs, narrative, tiles, otherInfo }: GameStateType = gameState;
+  const tavern = otherInfo.startingTavern as TileType;
   const [options, setOptions] = useState<OptionType[]>([]);
   const [saveRequest, setSaveRequest] = useState(false);
 
@@ -110,9 +110,7 @@ const GamePage = () => {
   };
 
   const generateLocationOptions = (): OptionType[] => {
-    const playerLocation = locations.find(
-      (loc) => loc.id === player.currentLocation
-    );
+    const playerLocation = tiles[player.x][player.y] as TileType;
     const locationOptions: OptionType[] = [];
     if (playerLocation?.locationType === "tavern") {
       locationOptions.push({
@@ -141,8 +139,9 @@ const GamePage = () => {
     }
 
     const npcsInLocation = npcs.filter(
-      (npc) => npc.currentLocation === player.currentLocation
+      (npc) => tiles[npc.x][npc.y].id === playerLocation.id
     );
+    console.log(playerLocation.id)
     const npcOptions = npcsInLocation.map((npc) => ({
       type: "npc",
       description: `Speak to ${npc.firstName} ${npc.lastName}, a ${ancestriesRecord[npc.ancestry].adj}${" "}
