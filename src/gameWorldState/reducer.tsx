@@ -38,6 +38,20 @@ const gameReducer = (
           },
         };
       }
+    case "UPDATE_NPC_GOLD":
+      return {
+        ...state,
+        npcs: state.npcs.map((npc) => {
+          if (npc.id === action.npcId) {
+            return {
+              ...npc,
+              gold: npc.gold + action.amount,
+            };
+          } else {
+            return npc;
+          }
+        }),
+      }
     case "UPDATE_PLAYER_HP":
       return {
         ...state,

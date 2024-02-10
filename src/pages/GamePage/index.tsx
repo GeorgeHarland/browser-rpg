@@ -88,15 +88,9 @@ const GamePage = () => {
     }
   };
 
-  const speakToNpc = (npc: NpcType) => {
-    setOptions(generateOptions("dialogue", npc));
-    // dispatch?.({
-    //   type: "UPDATE_MAIN_NARRATIVE",
-    //   newNarrative: {
-    //     text: "I don't want to talk right now.",
-    //   },
-    // });
-  };
+  const updateNpcGold = (npcId: number, changeAmount: number) => {
+    dispatch?.({ type: "UPDATE_NPC_GOLD", npcId: npcId, amount: changeAmount });
+  }
 
   const generateOptions = (nextActivity: ActivityType = "location", npc: NpcType | null = null): OptionType[] => {
     switch(nextActivity) {
@@ -152,7 +146,7 @@ const GamePage = () => {
       type: "npc",
       description: `Speak to ${npc.firstName} ${npc.lastName}, a ${ancestriesRecord[npc.ancestry].adj}${" "}
       ${npc.profession}`,
-      action: () => speakToNpc(npc),
+      action: () => setOptions(generateOptions("dialogue", npc))
     }));
 
     const spacer = {
@@ -180,18 +174,22 @@ const GamePage = () => {
   }
 
   const generateNpcOptions = (npc: NpcType): OptionType[] => {
-    const options = [
-      {
-        type: "npc",
-        description: "Play dice game (roll 2d6) - 1 gold to play",
-        action: () => playDiceGame(npc),
-      },
-      {
-        type: "npc",
-        description: "Leave conversation",
-        action: () => setOptions(generateOptions("location")),
-      },
-    ]
+    const options: OptionType[] = [];
+    if(npc.profession === "Gambler") {
+      if(npc.gold > 0) {
+        options.push(
+          {
+            type: "npc",
+            description: "Play dice game (roll 2d6) - 1 gold to play",
+            action: () => playDiceGame(npc),
+          })
+      }
+    }
+    options.push({
+      type: "npc",
+      description: "Leave conversation",
+      action: () => setOptions(generateOptions("location")),
+    })
     return options;
   }
 
@@ -227,6 +225,7 @@ const GamePage = () => {
         },
       });
       updateGold(1, false);
+      updateNpcGold(npc.id, -1)
     } else if(oTotal > pTotal) {
       dispatch?.({
         type: "UPDATE_MAIN_NARRATIVE",
@@ -235,6 +234,7 @@ const GamePage = () => {
         },
       });
       updateGold(-1, false);
+      updateNpcGold(npc.id, 1)
     } else {
       dispatch?.({
         type: "UPDATE_MAIN_NARRATIVE",
@@ -247,11 +247,12 @@ const GamePage = () => {
 
   useEffect(() => {
     setOptions(generateOptions());
+    console.log('Il gold: ', npcs[2].gold)
   }, [narrative, npcs, locations, player]);
 
   return (
     <div style={{ display: "flex" }}>
-      <div style={{ padding: "20px" }}>
+      <div style={{ padding: "20px", minWidth: "300px" }}>
         <div style={{ display: "flex", gap: "10px" }}>
           <p style={{ color: "darkred" }}>
             HP: {player.currentHp} / {player.maxHp}
@@ -285,7 +286,7 @@ const GamePage = () => {
         )}
         <SpacerWithLine />
       </div>
-        <div style={{ display: "flex", flexDirection: "column", gap:"10px", padding: "20px", maxWidth: "600px" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap:"10px", padding: "20px", maxWidth: "600px", minWidth: "300px" }}>
         <ZoneTitle>{tavern.name}</ZoneTitle>
         <SpacerWithLine />
           {narrative.mainNarrative.map((mainNarrative, i) => (

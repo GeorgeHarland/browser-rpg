@@ -13,6 +13,7 @@ export type GameAction =
   | { type: "SAVE_OPTIONS_TO_STATE"; optionsToAdd: OptionType[] }
   | { type: "UPDATE_GOLD"; amount: number }
   | { type: "UPDATE_MAIN_NARRATIVE"; newNarrative: NarrativeLine, reset?: boolean }
+  | { type: "UPDATE_NPC_GOLD"; npcId: number, amount: number }
   | { type: "UPDATE_PLAYER_HP"; amount: number };
 
 export type PlayerType = {
@@ -38,6 +39,7 @@ export type NarrativeLine = {
 };
 
 export type NpcType = {
+  id: number;
   firstName: string;
   lastName: string;
   ancestry: AncestryKeys;

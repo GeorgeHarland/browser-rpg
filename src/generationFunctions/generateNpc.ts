@@ -42,12 +42,14 @@ const secondNames = [
 ];
 
 export const generateNpc = (): NpcType => {
+  const id = Math.floor(Math.random() * 1000000);
   const firstName = getRandomElement(firstNames);
   const lastName = getRandomElement(secondNames);
   const ancestry = getRandomKey(ancestriesRecord) as AncestryKeys;
   const profession = getRandomKey(professionsRecord) as ProfessionKeys;
   const personality = getRandomKey(personalitiesRecord) as PersonalityKeys;
   return {
+    id,
     firstName,
     lastName,
     ancestry,
