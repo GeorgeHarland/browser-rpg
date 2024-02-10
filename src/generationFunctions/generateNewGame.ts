@@ -17,19 +17,25 @@ export const generateNewGame = (
   for (let i = 0; i < worldSize; i++) {
     worldGrid[i] = [];
     for (let j = 0; j < worldSize; j++) {
-      const isTavern = Math.random() < 0.01;
-      if(isTavern) {
-        worldGrid[i][j] = generateTavern(i, j);
-      } else {
+      const randomNumber = Math.random();
+      if(randomNumber > 0.01) {
         worldGrid[i][j] = {
           id: Math.floor(Math.random() * 1000000),
-          name: 'Wasteland',
-          locationType: "generic",
+          name: 'Plains',
+          locationType: "plains",
           x: i,
           y: j,
         };
-      }
-      if (isTavern) {
+      } else if(randomNumber > 0.005) {
+        worldGrid[i][j] = {
+          id: Math.floor(Math.random() * 1000000),
+          name: 'Ruins',
+          locationType: "ruins",
+          x: i,
+          y: j,
+        };
+      } else {
+        worldGrid[i][j] = generateTavern(i, j);
         taverns.push(worldGrid[i][j]);
       }
     }
@@ -83,6 +89,20 @@ export const generateNewGame = (
     x: startingTavern.x,
     y: startingTavern.y,
   };
+
+  console.log("World Grid Visualization:");
+  worldGrid.forEach((row) => {
+    let rowString = "";
+    row.forEach((tile) => {
+      if(tile.locationType === "tavern") {
+        const isStartingTavern = tile.x === startingTavern.x && tile.y === startingTavern.y;
+        rowString += isStartingTavern ? "T" : "t";
+      } else {
+        rowString += tile.locationType === "ruins" ? "r" : "_";
+      }
+    });
+    console.log(rowString);
+  });
 
   return {
     player: player,

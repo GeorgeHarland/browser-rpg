@@ -141,7 +141,6 @@ const GamePage = () => {
     const npcsInLocation = npcs.filter(
       (npc) => tiles[npc.x][npc.y].id === playerLocation.id
     );
-    console.log(playerLocation.id)
     const npcOptions = npcsInLocation.map((npc) => ({
       type: "npc",
       description: `Speak to ${npc.firstName} ${npc.lastName}, a ${ancestriesRecord[npc.ancestry].adj}${" "}
