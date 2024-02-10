@@ -112,8 +112,19 @@ const GamePage = () => {
   const generateLocationOptions = (): OptionType[] => {
     const playerLocation = tiles[player.x][player.y] as TileType;
     const locationOptions: OptionType[] = [];
+    let viewSurroundings: OptionType = {
+      type: "location",
+        description: "View surroundings",
+        action: () =>
+          dispatch?.({
+            type: "UPDATE_MAIN_NARRATIVE",
+            newNarrative: {
+              text: 'Nothing much around here.',
+            }, reset: true
+          }),
+    };
     if (playerLocation?.locationType === "tavern") {
-      locationOptions.push({
+      viewSurroundings = {
         type: "location",
         description: "View surroundings",
         action: () =>
@@ -121,11 +132,32 @@ const GamePage = () => {
             type: "UPDATE_MAIN_NARRATIVE",
             newNarrative: {
               text: `
-          This tavern is ${playerLocation.size} sized. It is known for it's ${playerLocation.feature}.
+          This tavern is ${playerLocation.size} sized. It is known for it's ${playerLocation.flavor}.
           `,
             }, reset: true
           }),
+      };
+      locationOptions.push({
+        type: "location",
+        description: "Check the noticeboard",
+        action: () =>
+          dispatch?.({
+            type: "UPDATE_MAIN_NARRATIVE",
+            newNarrative: { text: "Nothing useful." },
+            reset: true,
+          }),
       });
+      playerLocation.bookshelf &&
+        locationOptions.push({
+          type: "location",
+          description: "Browse bookshelf",
+          action: () =>
+            dispatch?.({
+              type: "UPDATE_MAIN_NARRATIVE",
+              newNarrative: { text: "Nothing useful. A few old tomes." },
+              reset: true,
+            }),
+        });
       locationOptions.push({
         type: "location",
         description: "Leave tavern",
@@ -152,23 +184,12 @@ const GamePage = () => {
       type: "spacer",
       description: "",
     };
-    const askGold = {
-      type: "gold",
-      description: "Ask for 1 gold",
-      action: () => updateGold(1),
-    };
-    const giveGold = {
-      type: "gold",
-      description: "Give away 1 gold",
-      action: () => updateGold(-1),
-    };
     return [
-      askGold,
-      giveGold,
+      viewSurroundings,
       spacer,
       ...npcOptions,
       spacer,
-      ...locationOptions,
+      ...locationOptions
     ];
   }
 
@@ -282,6 +303,7 @@ const GamePage = () => {
   return (
     <div style={{ display: "flex" }}>
       <div style={{ padding: "20px", minWidth: "300px" }}>
+        <SubtitleLine textcolour="black" style={{marginBottom: "2px"}}>{player.firstName + ' ' + player.lastName}</SubtitleLine>
         <div style={{ display: "flex", gap: "10px" }}>
           <p style={{ color: "darkred" }}>
             HP: {player.currentHp} / {player.maxHp}

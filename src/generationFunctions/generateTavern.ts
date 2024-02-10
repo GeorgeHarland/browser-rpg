@@ -60,7 +60,8 @@ export const generateTavern = (x: number, y: number): TileType => {
     locationType: "tavern",
     size: randomSize,
     rooms: roomAmount,
-    feature: randomFeature,
+    flavor: randomFeature,
+    bookshelf: Math.random() > 0.5,
     x: x,
     y: y,
   };

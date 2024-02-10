@@ -72,7 +72,7 @@ export type TileType =
   | {
     id: number,
     name: string,
-    locationType: "generic" | "plains" | "ruins",
+    locationType: "unknown" | "plains" | "ruins",
     x: number,
     y: number,
   }
@@ -82,7 +82,8 @@ export type TileType =
     locationType: "tavern",
     size: SizeKeys;
     rooms: number;
-    feature: string;
+    flavor: string;
+    bookshelf: boolean;
     x: number,
     y: number,
   
