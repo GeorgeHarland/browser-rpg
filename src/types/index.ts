@@ -51,7 +51,13 @@ export type NpcType = {
   gold: number;
   inventory: ItemType[];
   currentLocation: number;
+  dialogue: NpcDialogueType;
 };
+
+type NpcDialogueType = {
+  defaultOpener: string;
+  defaultCloser: string;
+}
 
 export type LocationType =
   | { id: number; name: string; locationType: "generic" }

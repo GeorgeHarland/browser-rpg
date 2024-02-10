@@ -175,6 +175,13 @@ const GamePage = () => {
 
   const generateNpcOptions = (npc: NpcType): OptionType[] => {
     const options: OptionType[] = [];
+    dispatch?.({
+      type: "UPDATE_MAIN_NARRATIVE",
+      newNarrative: {
+        text: npc.dialogue.defaultOpener,
+      },
+      reset: true,
+    });
     if(npc.profession === "Gambler") {
       if(npc.gold > 0) {
         options.push(
@@ -188,9 +195,20 @@ const GamePage = () => {
     options.push({
       type: "npc",
       description: "Leave conversation",
-      action: () => setOptions(generateOptions("location")),
+      action: () => leaveConversation(npc),
     })
     return options;
+  }
+
+  const leaveConversation = (npc: NpcType) => {
+    setOptions(generateOptions("location"));
+    dispatch?.({
+      type: "UPDATE_MAIN_NARRATIVE",
+      newNarrative: {
+        text: npc.dialogue.defaultCloser,
+      },
+      reset: true,
+    });
   }
 
   const playDiceGame = (npc: NpcType) => {
@@ -242,13 +260,13 @@ const GamePage = () => {
           text: `You both draw!`,
         },
       });
-    }  
+    }
   }
 
   useEffect(() => {
     setOptions(generateOptions());
-    console.log('Il gold: ', npcs[2].gold)
-  }, [narrative, npcs, locations, player]);
+  }, []);
+  // }, [narrative, npcs, locations, player]);
 
   return (
     <div style={{ display: "flex" }}>
@@ -262,7 +280,7 @@ const GamePage = () => {
         <p style={{ color: "brown" }}>{player.gold}g</p>
         <SpacerWithLine />
         {options.map((option, i) => {
-          if (option.type === "spacer") return <Spacer />;
+          if (option.type === "spacer") return <Spacer key={i} />;
           return (
             <OptionText onClick={option.action} key={i}>
               {option.description}

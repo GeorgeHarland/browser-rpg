@@ -41,6 +41,26 @@ const secondNames = [
   "Underhill",
 ];
 
+const openers = [
+  "Greetings traveller.",
+  "Ah, a new face. What brings you here",
+  "Have you heard any interesting rumors lately?",
+  "Hm. A new face. I'm not sure I like it.",
+  "Hello there.",
+  "What do you want?",
+  "I'm busy. What do you want?",
+  "I'm not in the mood for talking. What do you want?",
+]
+
+const closers = [
+  "I was busy anyway.",
+  "Goodbye.",
+  "...",
+  "Okay...",
+  "See you.",
+  "Well that was a waste of time..."
+]
+
 export const generateNpc = (): NpcType => {
   const id = Math.floor(Math.random() * 1000000);
   const firstName = getRandomElement(firstNames);
@@ -63,5 +83,9 @@ export const generateNpc = (): NpcType => {
     ),
     inventory: [],
     currentLocation: 1,
+    dialogue: {
+      defaultOpener: getRandomElement(openers),
+      defaultCloser: getRandomElement(closers),
+    },
   };
 };

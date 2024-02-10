@@ -35,6 +35,5 @@ export const validateGameState = (parsedState: GameStateType) => {
     validNpcs,
     validLocations
   );
-  console.log("Validation: ", validPlayer && validNpcs && validLocations);
   return validPlayer && validNpcs && validLocations;
 };
