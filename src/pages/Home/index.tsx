@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { OptionText, SpacerWithLine, Title } from "./styled";
+import { OptionText, SpacerWithLine, SubtitleLine, Title } from "./styled";
 import { useNavigate } from "react-router-dom";
 import GameContext from "../../gameWorldState/gameContext";
 import { generateNewGame } from "../../generationFunctions/generateNewGame";
@@ -29,19 +29,21 @@ const Home = () => {
     <div style={{ padding: "20px" }}>
       <Title>World Generator</Title>
       <SpacerWithLine />
-      <div>
+      <div style={{ display: "flex", flexDirection: 'column', gap: '0.1rem'}}>
+        <SubtitleLine>Player Character:</SubtitleLine>
+        First name:
         <input
           type="text"
-          placeholder="Character First Name"
           value={playerFirstName}
           onChange={(e) => setPlayerFirstName(e.target.value)}
+          style={{ backgroundColor: "white", border: "none", color: "black", maxWidth: "120px"}}
         />
-        <br />
+        Last name:
         <input
           type="text"
-          placeholder="Character Last Name"
           value={playerLastName}
           onChange={(e) => setPlayerLastName(e.target.value)}
+          style={{ backgroundColor: "white", border: "none", color: "black", maxWidth: "120px"}}
         />
       </div>
       <SpacerWithLine />

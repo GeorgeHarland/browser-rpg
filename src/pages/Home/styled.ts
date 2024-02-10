@@ -4,6 +4,11 @@ export const Title = styled.div`
   font-size: 28px;
 `;
 
+export const SubtitleLine = styled.div`
+  font-size: 18px;
+  font-weight: 600;
+`;
+
 export const SpacerWithLine = styled.div`
   margin: 1rem 0;
   border-bottom: 0.2px solid firebrick;
