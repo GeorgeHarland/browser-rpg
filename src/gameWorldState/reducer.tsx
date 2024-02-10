@@ -60,6 +60,14 @@ const gameReducer = (
           currentHp: state.player.currentHp + action.amount,
         },
       };
+    case "UPDATE_SUBTITLE":
+      return {
+        ...state,
+        narrative: {
+          ...state.narrative,
+          subtitle: action.newSubtitle,
+        },
+      };
     default:
       return state;
   }

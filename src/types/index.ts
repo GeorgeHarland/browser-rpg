@@ -1,4 +1,5 @@
 // When changing GameState types, make sure to update the validateState function
+
 // in src/gameWorldState/validateState.ts
 export type GameStateType = {
   player: PlayerType;
@@ -14,7 +15,8 @@ export type GameAction =
   | { type: "UPDATE_GOLD"; amount: number }
   | { type: "UPDATE_MAIN_NARRATIVE"; newNarrative: NarrativeLine, reset?: boolean }
   | { type: "UPDATE_NPC_GOLD"; npcId: number, amount: number }
-  | { type: "UPDATE_PLAYER_HP"; amount: number };
+  | { type: "UPDATE_PLAYER_HP"; amount: number }
+  | { type: "UPDATE_SUBTITLE"; newSubtitle: NarrativeLine }
 
 export type PlayerType = {
   firstName: string;
@@ -29,6 +31,7 @@ export type PlayerType = {
 };
 
 export type NarrativeType = {
+  subtitle?: NarrativeLine;
   mainNarrative: NarrativeLine[];
   notifications: NarrativeLine[];
 };

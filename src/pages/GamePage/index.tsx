@@ -5,6 +5,7 @@ import {
   OptionText,
   Spacer,
   SpacerWithLine,
+  SubtitleLine,
   ZoneTitle,
 } from "./styled";
 import {
@@ -71,7 +72,7 @@ const GamePage = () => {
 
   const updateGold = (changeAmount: number, reset: boolean = true) => {
     dispatch?.({ type: "UPDATE_GOLD", amount: changeAmount });
-    if (narrative.mainNarrative[0].text === "Your gold has changed.") {
+    if (narrative.mainNarrative[0].text === `Your gold has changed again. (${changeAmount >= 0 ? '+' + changeAmount : changeAmount})`) {
       dispatch?.({
         type: "UPDATE_MAIN_NARRATIVE",
         newNarrative: {
@@ -82,7 +83,7 @@ const GamePage = () => {
     } else {
       dispatch?.({
         type: "UPDATE_MAIN_NARRATIVE",
-        newNarrative: { text: "Your gold has changed." },
+        newNarrative: { text: `Your gold has changed. (${changeAmount >= 0 ? '+' + changeAmount : changeAmount})` },
         reset: reset,
       });
     }
@@ -176,9 +177,15 @@ const GamePage = () => {
   const generateNpcOptions = (npc: NpcType): OptionType[] => {
     const options: OptionType[] = [];
     dispatch?.({
+      type: "UPDATE_SUBTITLE",
+      newSubtitle: {
+        text: npc.firstName + ' ' + npc.lastName,
+      }
+    });
+    dispatch?.({
       type: "UPDATE_MAIN_NARRATIVE",
       newNarrative: {
-        text: npc.dialogue.defaultOpener,
+        text: '"' + npc.dialogue.defaultOpener + '"',
       },
       reset: true,
     });
@@ -205,9 +212,15 @@ const GamePage = () => {
     dispatch?.({
       type: "UPDATE_MAIN_NARRATIVE",
       newNarrative: {
-        text: npc.dialogue.defaultCloser,
+        text: '"' + npc.dialogue.defaultCloser + '"',
       },
       reset: true,
+    });
+    dispatch?.({
+      type: "UPDATE_SUBTITLE",
+      newSubtitle: {
+        text: '',
+      }
     });
   }
 
@@ -307,6 +320,7 @@ const GamePage = () => {
         <div style={{ display: "flex", flexDirection: "column", gap:"10px", padding: "20px", maxWidth: "600px", minWidth: "300px" }}>
         <ZoneTitle>{tavern.name}</ZoneTitle>
         <SpacerWithLine />
+        {narrative.subtitle && <SubtitleLine textcolour={narrative.subtitle.colour || 'black'}>{narrative.subtitle.text}</SubtitleLine>}
           {narrative.mainNarrative.map((mainNarrative, i) => (
             <NarrativeLine key={i} textcolour={mainNarrative.colour || "black"}>
               {mainNarrative.text}
