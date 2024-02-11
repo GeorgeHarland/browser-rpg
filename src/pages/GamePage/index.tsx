@@ -15,6 +15,7 @@ import {
   NpcType,
   OptionType,
   ancestriesRecord,
+  ItemType,
 } from "../../types";
 import GameContext from "../../gameWorldState/gameContext";
 import { useNavigate } from "react-router-dom";
@@ -93,11 +94,41 @@ const GamePage = () => {
     dispatch?.({ type: "UPDATE_NPC_GOLD", npcId: npcId, amount: changeAmount });
   }
 
-  const generateOptions = (nextActivity: ActivityType = "location", npc: NpcType | null = null): OptionType[] => {
+  const generateOptions = (nextActivity: ActivityType = "location", npc: NpcType | null = null, lootObject: ItemType[] | null = null): OptionType[] => {
     switch(nextActivity) {
       case "dialogue":
-        if(!npc) return [];
-        return generateNpcOptions(npc);
+        if(npc) return generateNpcOptions(npc);
+        if(lootObject) {
+          dispatch?.({
+            type: "UPDATE_MAIN_NARRATIVE",
+            newNarrative: { text: `The dusty shelves are nearly empty. There are only ${lootObject.length} books that are still legible.` },
+            reset: true,
+          })
+          const options: OptionType[] = [];
+          lootObject.map((item) => (options.push({
+            type: "location",
+            description: `Read ${item.name}`,
+            action: () =>
+              dispatch?.({
+                type: "UPDATE_MAIN_NARRATIVE",
+                newNarrative: { text: item.description || 'Barely legible.' },
+                reset: true,
+              }),
+            })))
+          options.push({
+            type: "spacer",
+            description: "",
+          })
+          options.push({
+            type: "location",
+            description: "Go back",
+            action: () => leaveArea()
+          })
+          return (
+            options
+          );
+        }
+        else return [];
       case "combat":
         return [];
       case "location":
@@ -147,17 +178,38 @@ const GamePage = () => {
             reset: true,
           }),
       });
-      playerLocation.bookshelf &&
-        locationOptions.push({
-          type: "location",
-          description: "Browse bookshelf",
-          action: () =>
-            dispatch?.({
-              type: "UPDATE_MAIN_NARRATIVE",
-              newNarrative: { text: "Nothing useful. A few old tomes." },
-              reset: true,
-            }),
-        });
+      if(playerLocation.bookshelf) {
+        if(playerLocation.bookshelf.length > 0) {
+          locationOptions.push({
+            type: "location",
+            description: "Browse bookshelf",
+            action: () => setOptions(generateOptions("dialogue", null, playerLocation.bookshelf))
+          });
+          // for(let i = 0; i < playerLocation.bookshelf.items.length; i++) {
+          //   locationOptions.push({
+          //     type: "location",
+          //     description: `Read ${playerLocation.bookshelf.items[i].name}`,
+          //     action: () =>
+          //       dispatch?.({
+          //         type: "UPDATE_MAIN_NARRATIVE",
+          //         newNarrative: { text: playerLocation.bookshelf?.items[i].description || 'Barely legible.' },
+          //         reset: true,
+          //       }),
+          //   });
+          // }
+        } else {
+          locationOptions.push({
+            type: "location",
+            description: "Browse bookshelf",
+            action: () =>
+              dispatch?.({
+                type: "UPDATE_MAIN_NARRATIVE",
+                newNarrative: { text: "Just a dusty set of shelves." },
+                reset: true,
+              }),
+          });
+        }
+      }
       locationOptions.push({
         type: "location",
         description: "Leave tavern",
@@ -224,6 +276,23 @@ const GamePage = () => {
       action: () => leaveConversation(npc),
     })
     return options;
+  }
+
+  const leaveArea = () => {
+    setOptions(generateOptions("location"));
+    dispatch?.({
+      type: "UPDATE_MAIN_NARRATIVE",
+      newNarrative: {
+        text: 'You leave the bookshelf.',
+      },
+      reset: true,
+    });
+    dispatch?.({
+      type: "UPDATE_SUBTITLE",
+      newSubtitle: {
+        text: '',
+      }
+    });
   }
 
   const leaveConversation = (npc: NpcType) => {

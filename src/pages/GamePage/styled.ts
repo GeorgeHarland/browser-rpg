@@ -2,6 +2,7 @@ import styled from "styled-components";
 
 export const ZoneTitle = styled.div`
   font-size: 24px;
+  font-weight: 600;
 `;
 
 export const SubtitleLine = styled.div<{ textcolour: string }>`

@@ -1,4 +1,4 @@
-import { SizeKeys, TileType } from "../types";
+import { ItemType, SizeKeys, TileType } from "../types";
 
 const tavernNameAdjectives = [
   "Crimson",
@@ -21,6 +21,46 @@ const tavernFeatures = [
   "Historical Significance",
   "Talking Parrots",
 ];
+
+const books: ItemType[] = [{
+  name: "The Art of Magic",
+  description: "A book on magic theory",
+  buyPrice: 10,
+  sellPrice: 5,
+},
+{ name: "The Art of War",
+  description: "A book on military strategy",
+  buyPrice: 10,
+  sellPrice: 5,},
+{ name: "The Art of Peace",
+  description: "A book on diplomacy",
+  buyPrice: 10,
+  sellPrice: 5,},
+{ name: "The Trials of the Soul",
+description: "A book on the nature of the soul",
+buyPrice: 10,
+sellPrice: 5,},
+{ name: "The Trials of the Body",
+description: "A book on the nature of the body",
+buyPrice: 10,
+sellPrice: 5,},
+{ name: "The Trials of the Mind",
+description: "A book on the nature of the mind",
+buyPrice: 10,
+sellPrice: 5,},
+{ name: "The Trials of the Heart",
+description: "A book on the nature of the heart",
+buyPrice: 10,
+sellPrice: 5,},
+{ name: "The Trials of the Spirit",
+description: "A book on the nature of the spirit",
+buyPrice: 10,
+sellPrice: 5,},
+{ name: "The Trials of the World",
+description: "A book on the nature of the world",
+buyPrice: 10,
+sellPrice: 5,},
+]
 
 export const generateTavern = (x: number, y: number): TileType => {
   const randomAdjective =
@@ -54,6 +94,15 @@ export const generateTavern = (x: number, y: number): TileType => {
       roomAmount = 10;
   }
 
+  let bookshelf: ItemType[] = [];
+  if(Math.random() > 0.5) {
+    const bookCount = Math.floor(Math.random() * 3) + 1; // 1-3
+    for(let i = 0; i < bookCount; i++) {
+      const randomBook = books[Math.floor(Math.random() * books.length)];
+      bookshelf.push(randomBook);
+    }
+  }
+
   return {
     id: Math.floor(Math.random() * 1000000),
     name: randomName,
@@ -61,7 +110,7 @@ export const generateTavern = (x: number, y: number): TileType => {
     size: randomSize,
     rooms: roomAmount,
     flavor: randomFeature,
-    bookshelf: Math.random() > 0.5,
+    bookshelf: bookshelf,
     x: x,
     y: y,
   };

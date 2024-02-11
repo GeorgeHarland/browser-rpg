@@ -83,10 +83,9 @@ export type TileType =
     size: SizeKeys;
     rooms: number;
     flavor: string;
-    bookshelf: boolean;
-    x: number,
-    y: number,
-  
+    bookshelf: ItemType[];
+    x: number;
+    y: number;
   }
 
 export type ItemType = {
