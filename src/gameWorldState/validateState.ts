@@ -30,11 +30,6 @@ export const validateGameState = (parsedState: GameStateType) => {
     //     typeof loc.locationType === "string"
     // );
     true;
-  console.log(
-    "Validation check on generation: ",
-    validPlayer,
-    validNpcs,
-    validLocations
-  );
+  console.log("Validation check on generation: ", validPlayer, validNpcs, validLocations);
   return validPlayer && validNpcs && validLocations;
 };

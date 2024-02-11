@@ -9,17 +9,21 @@ export type GameStateType = {
   tiles: TileType[][];
   otherInfo: {
     startingTavern: TileType;
-  }
+  };
 };
 
 export type GameAction =
   | { type: "LOAD_STATE"; stateToLoad: GameStateType }
   | { type: "SAVE_OPTIONS_TO_STATE"; optionsToAdd: OptionType[] }
   | { type: "UPDATE_GOLD"; amount: number }
-  | { type: "UPDATE_MAIN_NARRATIVE"; newNarrative: NarrativeLine, reset?: boolean }
-  | { type: "UPDATE_NPC_GOLD"; npcId: number, amount: number }
+  | {
+      type: "UPDATE_MAIN_NARRATIVE";
+      newNarrative: NarrativeLine;
+      reset?: boolean;
+    }
+  | { type: "UPDATE_NPC_GOLD"; npcId: number; amount: number }
   | { type: "UPDATE_PLAYER_HP"; amount: number }
-  | { type: "UPDATE_SUBTITLE"; newSubtitle: NarrativeLine }
+  | { type: "UPDATE_SUBTITLE"; newSubtitle: NarrativeLine };
 
 export type PlayerType = {
   firstName: string;
@@ -66,27 +70,27 @@ export type NpcType = {
 type NpcDialogueType = {
   defaultOpener: string;
   defaultCloser: string;
-}
+};
 
-export type TileType = 
+export type TileType =
   | {
-    id: number,
-    name: string,
-    locationType: "unknown" | "plains" | "ruins",
-    x: number,
-    y: number,
-  }
+      id: number;
+      name: string;
+      locationType: "unknown" | "plains" | "ruins";
+      x: number;
+      y: number;
+    }
   | {
-    id: number,
-    name: string,
-    locationType: "tavern",
-    size: SizeKeys;
-    rooms: number;
-    flavor: string;
-    bookshelf: ItemType[];
-    x: number;
-    y: number;
-  }
+      id: number;
+      name: string;
+      locationType: "tavern";
+      size: SizeKeys;
+      rooms: number;
+      flavor: string;
+      bookshelf: ItemType[];
+      x: number;
+      y: number;
+    };
 
 export type ItemType = {
   name: string;

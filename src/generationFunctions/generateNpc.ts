@@ -66,16 +66,9 @@ const openers = [
   "What do you want?",
   "I'm busy. What do you want?",
   "I'm not in the mood for talking. What do you want?",
-]
+];
 
-const closers = [
-  "I was busy anyway.",
-  "Goodbye.",
-  "...",
-  "Okay...",
-  "See you.",
-  "Well that was a waste of time..."
-]
+const closers = ["I was busy anyway.", "Goodbye.", "...", "Okay...", "See you.", "Well that was a waste of time..."];
 
 export const generateNpc = (x: number, y: number): NpcType => {
   const id = Math.floor(Math.random() * 1000000);
@@ -94,9 +87,7 @@ export const generateNpc = (x: number, y: number): NpcType => {
     currentHp: ancestriesRecord[ancestry].baseMaxHp,
     maxHp: ancestriesRecord[ancestry].baseMaxHp,
     mana: 0,
-    gold: Math.floor(
-      Math.random() * professionsRecord[profession].incomeFactor
-    ),
+    gold: Math.floor(Math.random() * professionsRecord[profession].incomeFactor),
     inventory: [],
     currentLocation: 1,
     dialogue: {

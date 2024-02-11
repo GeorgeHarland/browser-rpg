@@ -1,9 +1,6 @@
 import { GameAction, GameStateType } from "../types";
 
-const gameReducer = (
-  state: GameStateType,
-  action: GameAction
-): GameStateType => {
+const gameReducer = (state: GameStateType, action: GameAction): GameStateType => {
   switch (action.type) {
     case "LOAD_STATE":
       return action.stateToLoad;
@@ -18,18 +15,15 @@ const gameReducer = (
         player: { ...state.player, gold: state.player.gold + action.amount },
       };
     case "UPDATE_MAIN_NARRATIVE":
-      if(!action.reset)
-      {  return {
+      if (!action.reset) {
+        return {
           ...state,
           narrative: {
             ...state.narrative,
-            mainNarrative: [
-              ...state.narrative.mainNarrative,
-              action.newNarrative,
-            ],
+            mainNarrative: [...state.narrative.mainNarrative, action.newNarrative],
           },
-        };}
-      else {
+        };
+      } else {
         return {
           ...state,
           narrative: {
@@ -51,7 +45,7 @@ const gameReducer = (
             return npc;
           }
         }),
-      }
+      };
     case "UPDATE_PLAYER_HP":
       return {
         ...state,

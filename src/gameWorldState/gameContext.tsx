@@ -17,11 +17,7 @@ type Props = {
 export const GameProvider = ({ children }: Props) => {
   const [state, dispatch] = useReducer(gameReducer, null, initializeGame);
 
-  return (
-    <GameContext.Provider value={{ state, dispatch }}>
-      {children}
-    </GameContext.Provider>
-  );
+  return <GameContext.Provider value={{ state, dispatch }}>{children}</GameContext.Provider>;
 };
 
 const initializeGame = () => {
@@ -54,10 +50,12 @@ const generateFakeGame = () => {
       y: 0,
     },
     narrative: {
-      mainNarrative: [{
-        text: "You should not be seeing this. Please redirect to the home page and generate a new world.",
-        colour: "darkred",
-      }],
+      mainNarrative: [
+        {
+          text: "You should not be seeing this. Please redirect to the home page and generate a new world.",
+          colour: "darkred",
+        },
+      ],
       notifications: [],
     },
     options: [],

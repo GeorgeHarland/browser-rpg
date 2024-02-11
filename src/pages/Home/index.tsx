@@ -29,21 +29,31 @@ const Home = () => {
     <div style={{ padding: "20px" }}>
       <Title>World Generator</Title>
       <SpacerWithLine />
-      <div style={{ display: "flex", flexDirection: 'column', gap: '0.1rem'}}>
+      <div style={{ display: "flex", flexDirection: "column", gap: "0.1rem" }}>
         <SubtitleLine>Player Character:</SubtitleLine>
         First name:
         <input
           type="text"
           value={playerFirstName}
           onChange={(e) => setPlayerFirstName(e.target.value)}
-          style={{ backgroundColor: "white", border: "none", color: "black", maxWidth: "120px"}}
+          style={{
+            backgroundColor: "white",
+            border: "none",
+            color: "black",
+            maxWidth: "120px",
+          }}
         />
         Last name:
         <input
           type="text"
           value={playerLastName}
           onChange={(e) => setPlayerLastName(e.target.value)}
-          style={{ backgroundColor: "white", border: "none", color: "black", maxWidth: "120px"}}
+          style={{
+            backgroundColor: "white",
+            border: "none",
+            color: "black",
+            maxWidth: "120px",
+          }}
         />
       </div>
       <SpacerWithLine />
