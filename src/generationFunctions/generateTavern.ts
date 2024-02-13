@@ -99,7 +99,7 @@ export const generateTavern = (x: number, y: number): TileType => {
       roomAmount = 10;
   }
 
-  let bookshelf: ItemType[] = [];
+  const bookshelf: ItemType[] = [];
   if (Math.random() > 0.5) {
     const bookCount = Math.floor(Math.random() * 3) + 1; // 1-3
     for (let i = 0; i < bookCount; i++) {

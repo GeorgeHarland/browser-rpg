@@ -69,7 +69,7 @@ const generateFakeGame = () => {
         size: "small",
         rooms: 0,
         flavor: "ERROR",
-        bookshelf: false,
+        bookshelf: [],
         x: 0,
         y: 0,
       },

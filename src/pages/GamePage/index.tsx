@@ -92,7 +92,7 @@ const GamePage = () => {
           dispatch?.({
             type: "UPDATE_MAIN_NARRATIVE",
             newNarrative: {
-              text: `The dusty shelves are nearly empty. There are only ${lootObject.length} books that are still legible.`,
+              text: `The dusty shelves are nearly empty. There are only ${lootObject.length} books left.`,
             },
             reset: true,
           });
