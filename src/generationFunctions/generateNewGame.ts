@@ -13,13 +13,16 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
   // generate world grid
   for (let i = 0; i < worldSize; i++) {
     worldGrid[i] = [];
-    let previousTile = 'forest';
+    let previousXTile = 'forest';
+    let previousYTile = 'forest';
     for (let j = 0; j < worldSize; j++) {
       const randomNumber = Math.random();
-      const matchPrevious = Math.random() > 0.5 ? previousTile : null;
+      if(j > 0) previousYTile = worldGrid[i][j-1].locationType;
+      let matchPreviousRandomFactor = Math.random();
+      if (previousXTile === previousYTile) matchPreviousRandomFactor += 0.6;
       let tileType = 'forest'
 
-      if (matchPrevious) tileType = matchPrevious;
+      if (matchPreviousRandomFactor > 0.8) tileType = Math.random() > 0.5 ? previousXTile : previousYTile;
       else if (randomNumber > 0.66) tileType = "plains";
       else if (randomNumber > 0.33) tileType = "forest";
       else if (randomNumber > 0.01) tileType = "mountain";
@@ -66,7 +69,6 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
         case 'tavern':
           worldGrid[i][j] = generateTavern(i, j);
           taverns.push(worldGrid[i][j]);
-          previousTile = 'tavern'
           break;
         default:
           worldGrid[i][j] = {
@@ -77,7 +79,7 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
             y: j,
           };
       }
-      previousTile = tileType;
+      previousXTile = tileType;
     }
   }
 
