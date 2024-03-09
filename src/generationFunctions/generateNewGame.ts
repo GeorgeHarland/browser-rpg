@@ -5,36 +5,79 @@ import { generateTavern } from "./generateTavern";
 // Accepts optional player name arguments
 
 export const generateNewGame = (playerFirstName: string = "Tom", playerLastName: string = "Karnos"): GameStateType => {
-  const worldSize = 100;
+  const worldSize = 50;
   const taverns: TileType[] = [];
   const npcs: NpcType[] = [];
   const worldGrid: TileType[][] = [[], []];
 
-  // generate world grid - either wastelands or taverns
+  // generate world grid
   for (let i = 0; i < worldSize; i++) {
     worldGrid[i] = [];
+    let previousTile = 'forest';
     for (let j = 0; j < worldSize; j++) {
       const randomNumber = Math.random();
-      if (randomNumber > 0.01) {
-        worldGrid[i][j] = {
-          id: Math.floor(Math.random() * 1000000),
-          name: "Plains",
-          locationType: "plains",
-          x: i,
-          y: j,
-        };
-      } else if (randomNumber > 0.005) {
-        worldGrid[i][j] = {
-          id: Math.floor(Math.random() * 1000000),
-          name: "Ruins",
-          locationType: "ruins",
-          x: i,
-          y: j,
-        };
-      } else {
-        worldGrid[i][j] = generateTavern(i, j);
-        taverns.push(worldGrid[i][j]);
+      const matchPrevious = Math.random() > 0.5 ? previousTile : null;
+      let tileType = 'forest'
+
+      if (matchPrevious) tileType = matchPrevious;
+      else if (randomNumber > 0.66) tileType = "plains";
+      else if (randomNumber > 0.33) tileType = "forest";
+      else if (randomNumber > 0.01) tileType = "mountain";
+      else if (randomNumber > 0.005) tileType = "ruins";
+      else tileType = "tavern";
+
+      switch(tileType) {
+        case 'plains':
+          worldGrid[i][j] = {
+            id: Math.floor(Math.random() * 1000000),
+            name: "Plains",
+            locationType: "plains",
+            x: i,
+            y: j,
+          };
+          break;
+        case 'forest':
+          worldGrid[i][j] = {
+            id: Math.floor(Math.random() * 1000000),
+            name: "Forest",
+            locationType: "forest",
+            x: i,
+            y: j,
+          };
+          break;
+        case 'mountain':
+          worldGrid[i][j] = {
+            id: Math.floor(Math.random() * 1000000),
+            name: "Mountain",
+            locationType: "mountain",
+            x: i,
+            y: j,
+          };
+          break;
+        case 'ruins':
+          worldGrid[i][j] = {
+            id: Math.floor(Math.random() * 1000000),
+            name: "Ruins",
+            locationType: "ruins",
+            x: i,
+            y: j,
+          };
+          break;
+        case 'tavern':
+          worldGrid[i][j] = generateTavern(i, j);
+          taverns.push(worldGrid[i][j]);
+          previousTile = 'tavern'
+          break;
+        default:
+          worldGrid[i][j] = {
+            id: Math.floor(Math.random() * 1000000),
+            name: "Forest",
+            locationType: "forest",
+            x: i,
+            y: j,
+          };
       }
+      previousTile = tileType;
     }
   }
 
@@ -91,11 +134,25 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
   worldGrid.forEach((row) => {
     let rowString = "";
     row.forEach((tile) => {
-      if (tile.locationType === "tavern") {
-        const isStartingTavern = tile.x === startingTavern.x && tile.y === startingTavern.y;
-        rowString += isStartingTavern ? "T" : "t";
-      } else {
-        rowString += tile.locationType === "ruins" ? "r" : "_";
+      switch(tile.locationType) {
+        case 'plains':
+          rowString += "p";
+          break;
+        case 'forest':
+          rowString += "f";
+          break;
+        case 'mountain':
+          rowString += "m"
+          break;
+        case 'ruins':
+          rowString += "r"
+          break;
+        case 'tavern':
+          const isStartingTavern = tile.x === startingTavern.x && tile.y === startingTavern.y;
+          rowString += isStartingTavern ? "T" : "t";
+          break;
+        default:
+          rowString += "?";
       }
     });
     console.log(rowString);
