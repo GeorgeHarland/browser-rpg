@@ -76,7 +76,7 @@ export type TileType =
   | {
       id: number;
       name: string;
-      locationType: "plains" | "mountain" | "forest" | "ruins" | "tundra" | "desert" | "swamp" | "hilllands";
+      locationType: "plains" | "mountain" | "forest" | "ruins" | "tundra" | "desert" | "swamp" | "hills";
       x: number;
       y: number;
     }

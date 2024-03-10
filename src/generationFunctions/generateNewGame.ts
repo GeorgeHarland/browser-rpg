@@ -17,15 +17,14 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
     let previousYTile = 'unique';
     for (let j = 0; j < worldSize; j++) {
       const randomNumber = Math.random();
-      if(j > 0) previousYTile = worldGrid[i][j-1].locationType;
+      if(i > 0) previousYTile = worldGrid[i-1][j].locationType;
       let matchPreviousRandomFactor = Math.random();
-      if (previousXTile === previousYTile) matchPreviousRandomFactor += 0.6;
       let tileType = 'unique'
 
-      if (matchPreviousRandomFactor > 0.85 && previousXTile != 'unique' && previousYTile != 'unique') tileType = Math.random() > 0.5 ? previousXTile : previousYTile;
+      if (matchPreviousRandomFactor > 0.15 && previousXTile != 'unique' && previousYTile != 'unique') tileType = Math.random() > 0.5 ? previousXTile : previousYTile;
       else if (randomNumber > 0.75) tileType = "forest"; // x2 chance
       else if (randomNumber > 0.625) tileType = "plains";
-      else if (randomNumber > 0.5) tileType = "hilllands";
+      else if (randomNumber > 0.5) tileType = "hills";
       else if (randomNumber > 0.375) tileType = "mountain";
       else if (randomNumber > 0.25) tileType = "desert";
       else if (randomNumber > 0.125) tileType = "tundra";
@@ -73,11 +72,11 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
               y: j,
             };
             break;
-            case 'hilllands':
+            case 'hills':
           worldGrid[i][j] = {
             id: Math.floor(Math.random() * 1000000),
-            name: "Hilllands",
-            locationType: "hilllands",
+            name: "Hills",
+            locationType: "hills",
             x: i,
             y: j,
           };
@@ -122,7 +121,7 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
             y: j,
           };
       }
-      if(tileType === ('tavern' || 'ruins')) previousXTile = 'unique'
+      if((tileType === 'tavern') || (tileType === 'ruins')) previousXTile = 'unique'
       else previousXTile = tileType
     }
   }
@@ -187,7 +186,7 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
         case 'forest':
           rowString += "f";
           break;
-        case 'hilllands':
+        case 'hills':
           rowString += "h";
           break;
         case 'mountain':
