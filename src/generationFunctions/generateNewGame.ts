@@ -137,13 +137,20 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
     }
   }
 
-  // for each tile, fill points of interest
-  // forests - 10% chance tavern each
+  // for each tile, fill points of interest - 2-5 each
   tiles2DArray.forEach(tile => {
-    if(tile.locationType === 'forest' && Math.random() > 0.9) {
-      const tavern = generateTavern(tile.x, tile.y);
-      tile.pointsOfInterest.push(tavern);
-      taverns.push(tavern);
+    for(let i = 0; i < Math.floor(Math.random() * 4 + 2); i++) {
+      switch(tile.locationType) {
+        case 'forest':
+          if(Math.random() > 0.98) {
+            const tavern = generateTavern(tile.x, tile.y);
+            tile.pointsOfInterest.push(tavern);
+            taverns.push(tavern);
+          }
+          break;
+        default:
+          break;
+      }
     }
   });
 
@@ -242,7 +249,7 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
       mainNarrative: [
         {
           text: `Welcome to the game! Narrative text will be written here. You start at the ${startingTavern.name} Tavern. You can interact with the world using the options on the left.
-        There are ${npcs.length} NPCs in the world, and ${taverns.length} taverns.`,
+        There are ${npcs.length} NPCs in the world, ${tiles2DArray.length} terrain tiles, and ${taverns.length} taverns.`,
           colour: "black",
         },
       ],
