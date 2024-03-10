@@ -8,7 +8,7 @@ export type GameStateType = {
   npcs: NpcType[];
   tiles: TileType[][];
   otherInfo: {
-    startingTavern: TileType;
+    startingTavern: PointOfInterest;
   };
 };
 
@@ -73,24 +73,34 @@ type NpcDialogueType = {
 };
 
 export type TileType =
-  | {
+  {
       id: number;
       name: string;
-      locationType: "plains" | "mountain" | "forest" | "ruins" | "tundra" | "desert" | "swamp" | "hills";
+      locationType: "plains" | "mountain" | "forest" | "tundra" | "desert" | "swamp" | "hills";
+      pointsOfInterest: PointOfInterest[];
       x: number;
       y: number;
-    }
+    };
+
+export type PointOfInterest = 
   | {
       id: number;
+      tileX: number;
+      tileY: number;
       name: string;
-      locationType: "tavern";
+      type: "tavern";
       size: SizeKeys;
       rooms: number;
       flavor: string;
       bookshelf: ItemType[];
-      x: number;
-      y: number;
-    };
+    }
+    | {
+      id: number;
+      tileX: number;
+      tileY: number;
+      name: string;
+      type: "ruins";
+    }
 
 export type ItemType = {
   name: string;

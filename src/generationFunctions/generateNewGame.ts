@@ -1,4 +1,4 @@
-import { GameStateType, NpcType, TileType } from "../types";
+import { GameStateType, NpcType, PointOfInterest, TileType } from "../types";
 import { generateNpc } from "./generateNpc";
 import { generateTavern } from "./generateTavern";
 
@@ -6,20 +6,21 @@ import { generateTavern } from "./generateTavern";
 
 export const generateNewGame = (playerFirstName: string = "Tom", playerLastName: string = "Karnos"): GameStateType => {
   const worldSize = 65;
-  const taverns: TileType[] = [];
+  const taverns: PointOfInterest[] = [];
   const npcs: NpcType[] = [];
   const worldGrid: TileType[][] = [[], []];
+  const tiles2DArray = [];
 
   // generate world grid
   for (let i = 0; i < worldSize; i++) {
     worldGrid[i] = [];
-    let previousXTile = 'unique';
-    let previousYTile = 'unique';
+    let previousXTile = 'forest';
+    let previousYTile = 'forest';
     for (let j = 0; j < worldSize; j++) {
       const randomNumber = Math.random();
       if(i > 0) previousYTile = worldGrid[i-1][j].locationType;
       let matchPreviousRandomFactor = Math.random();
-      let tileType = 'unique'
+      let tileType = 'forest'
 
       if (matchPreviousRandomFactor > 0.15 && previousXTile != 'unique' && previousYTile != 'unique') tileType = Math.random() > 0.5 ? previousXTile : previousYTile;
       else if (randomNumber > 0.75) tileType = "forest"; // x2 chance
@@ -41,6 +42,7 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
             id: Math.floor(Math.random() * 1000000),
             name: "Plains",
             locationType: "plains",
+            pointsOfInterest: [],
             x: i,
             y: j,
           };
@@ -50,6 +52,7 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
             id: Math.floor(Math.random() * 1000000),
             name: "Forest",
             locationType: "forest",
+            pointsOfInterest: [],
             x: i,
             y: j,
           };
@@ -59,6 +62,7 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
             id: Math.floor(Math.random() * 1000000),
             name: "Mountain",
             locationType: "mountain",
+            pointsOfInterest: [],
             x: i,
             y: j,
           };
@@ -68,6 +72,7 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
               id: Math.floor(Math.random() * 1000000),
               name: "Swamp",
               locationType: "swamp",
+              pointsOfInterest: [],
               x: i,
               y: j,
             };
@@ -77,6 +82,7 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
             id: Math.floor(Math.random() * 1000000),
             name: "Hills",
             locationType: "hills",
+            pointsOfInterest: [],
             x: i,
             y: j,
           };
@@ -86,6 +92,7 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
             id: Math.floor(Math.random() * 1000000),
             name: "Desert",
             locationType: "desert",
+            pointsOfInterest: [],
             x: i,
             y: j,
           };
@@ -95,49 +102,63 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
             id: Math.floor(Math.random() * 1000000),
             name: "Tundra",
             locationType: "tundra",
+            pointsOfInterest: [],
             x: i,
             y: j,
           };
           break;
-        case 'ruins':
-          worldGrid[i][j] = {
-            id: Math.floor(Math.random() * 1000000),
-            name: "Ruins",
-            locationType: "ruins",
-            x: i,
-            y: j,
-          };
-          break;
-        case 'tavern':
-          worldGrid[i][j] = generateTavern(i, j);
-          taverns.push(worldGrid[i][j]);
-          break;
+        // case 'ruins':
+        //   worldGrid[i][j] = {
+        //     id: Math.floor(Math.random() * 1000000),
+        //     name: "Ruins",
+        //     locationType: "ruins",
+        //     pointsOfInterest: [],
+        //     x: i,
+        //     y: j,
+        //   };
+        //   break;
+        // case 'tavern':
+        //   worldGrid[i][j] = generateTavern(i, j);
+        //   taverns.push(worldGrid[i][j]);
+        //   break;
         default:
           worldGrid[i][j] = {
             id: Math.floor(Math.random() * 1000000),
             name: "Forest",
             locationType: "forest",
+            pointsOfInterest: [],
             x: i,
             y: j,
           };
       }
       if((tileType === 'tavern') || (tileType === 'ruins')) previousXTile = 'unique'
       else previousXTile = tileType
+      tiles2DArray.push(worldGrid[i][j])
     }
   }
+
+  // for each tile, fill points of interest
+  // forests - 10% chance tavern each
+  tiles2DArray.forEach(tile => {
+    if(tile.locationType === 'forest' && Math.random() > 0.9) {
+      const tavern = generateTavern(tile.x, tile.y);
+      tile.pointsOfInterest.push(tavern);
+      taverns.push(tavern);
+    }
+  });
 
   // at least one tavern must exist
   if (taverns.length === 0) {
     const x = Math.floor(Math.random() * worldSize);
     const y = Math.floor(Math.random() * worldSize);
     const tavern = generateTavern(x, y);
-    worldGrid[x][y] = tavern;
+    worldGrid[x][y].pointsOfInterest.push(tavern);
     taverns.push(tavern);
   }
 
   // gen NPCs for each tavern, set starting loc to that tavern
   taverns.forEach((tavern) => {
-    if (tavern.locationType !== "tavern") return;
+    if (tavern.type !== "tavern") return;
     let npcCount = 0;
     switch (tavern.size) {
       case "small":
@@ -154,7 +175,7 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
         break;
     }
     for (let i = 0; i < npcCount; i++) {
-      const npc = generateNpc(tavern.x, tavern.y);
+      const npc = generateNpc(tavern.tileX, tavern.tileY);
       npcs.push(npc);
     }
   });
@@ -171,8 +192,8 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
     exp: 0,
     inventory: [],
     currentLocation: startingTavern.id,
-    x: startingTavern.x,
-    y: startingTavern.y,
+    x: startingTavern.tileX,
+    y: startingTavern.tileY,
   };
 
   console.log("World Grid Visualization:");
@@ -201,13 +222,13 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
         case 'swamp':
           rowString += "s";
           break;
-        case 'ruins':
-          rowString += "R"
-          break;
-        case 'tavern':
-          const isStartingTavern = tile.x === startingTavern.x && tile.y === startingTavern.y;
-          rowString += isStartingTavern ? "*T*" : "T";
-          break;
+        // case 'ruins':
+        //   rowString += "R"
+        //   break;
+        // case 'tavern':
+        //   const isStartingTavern = tile.x === startingTavern.x && tile.y === startingTavern.y;
+        //   rowString += isStartingTavern ? "*T*" : "T";
+        //   break;
         default:
           rowString += "?";
       }

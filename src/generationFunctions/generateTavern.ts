@@ -1,4 +1,4 @@
-import { ItemType, SizeKeys, TileType } from "../types";
+import { ItemType, PointOfInterest, SizeKeys } from "../types";
 
 const tavernNameAdjectives = ["Crimson", "Emerald", "Sapphire", "Topaz", "Golden"];
 
@@ -73,7 +73,7 @@ const books: ItemType[] = [
   },
 ];
 
-export const generateTavern = (x: number, y: number): TileType => {
+export const generateTavern = (tileX: number, tileY: number): PointOfInterest => {
   const randomAdjective = tavernNameAdjectives[Math.floor(Math.random() * tavernNameAdjectives.length)];
   const randomNoun = tavernNameNouns[Math.floor(Math.random() * tavernNameNouns.length)];
   const randomName = `The ${randomAdjective} ${randomNoun}`;
@@ -110,13 +110,13 @@ export const generateTavern = (x: number, y: number): TileType => {
 
   return {
     id: Math.floor(Math.random() * 1000000),
+    tileX: tileX,
+    tileY: tileY,
     name: randomName,
-    locationType: "tavern",
+    type: "tavern",
     size: randomSize,
     rooms: roomAmount,
     flavor: randomFeature,
     bookshelf: bookshelf,
-    x: x,
-    y: y,
   };
 };
