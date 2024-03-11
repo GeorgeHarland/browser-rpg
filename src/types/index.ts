@@ -1,6 +1,6 @@
 // When changing GameState types, make sure to update the validateState function
-
 // in src/gameWorldState/validateState.ts
+
 export type GameStateType = {
   player: PlayerType;
   narrative: NarrativeType;
@@ -99,7 +99,7 @@ export type PointOfInterest =
       tileX: number;
       tileY: number;
       name: string;
-      type: "ruins";
+      type: "ruins" | "ironMine";
     }
 
 export type ItemType = {

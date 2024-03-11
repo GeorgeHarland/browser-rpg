@@ -107,20 +107,6 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
             y: j,
           };
           break;
-        // case 'ruins':
-        //   worldGrid[i][j] = {
-        //     id: Math.floor(Math.random() * 1000000),
-        //     name: "Ruins",
-        //     locationType: "ruins",
-        //     pointsOfInterest: [],
-        //     x: i,
-        //     y: j,
-        //   };
-        //   break;
-        // case 'tavern':
-        //   worldGrid[i][j] = generateTavern(i, j);
-        //   taverns.push(worldGrid[i][j]);
-        //   break;
         default:
           worldGrid[i][j] = {
             id: Math.floor(Math.random() * 1000000),
@@ -137,6 +123,8 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
     }
   }
 
+  let ruinsCount = 0;
+  let ironMinesCount = 0;
   // for each tile, fill points of interest - 2-5 each
   tiles2DArray.forEach(tile => {
     for(let i = 0; i < Math.floor(Math.random() * 4 + 2); i++) {
@@ -146,9 +134,47 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
             const tavern = generateTavern(tile.x, tile.y);
             tile.pointsOfInterest.push(tavern);
             taverns.push(tavern);
+          } else {
+            tile.pointsOfInterest.push({
+              id: Math.floor(Math.random() * 100000),
+              tileX: tile.x,
+              tileY: tile.y,
+              name: 'Ruins',
+              type: 'ruins'
+            })
+            ruinsCount++;
+          }
+          break;
+        case 'mountain':
+          if(Math.random() > 0.98) {
+            tile.pointsOfInterest.push({
+              id: Math.floor(Math.random() * 100000),
+              tileX: tile.x,
+              tileY: tile.y,
+              name: 'Iron Mine',
+              type: 'ironMine'
+            })
+            ironMinesCount++;
+          } else {
+            tile.pointsOfInterest.push({
+              id: Math.floor(Math.random() * 100000),
+              tileX: tile.x,
+              tileY: tile.y,
+              name: 'Ruins',
+              type: 'ruins'
+            })
+            ruinsCount++;
           }
           break;
         default:
+          tile.pointsOfInterest.push({
+            id: Math.floor(Math.random() * 100000),
+            tileX: tile.x,
+            tileY: tile.y,
+            name: 'Ruins',
+            type: 'ruins'
+          });
+          ruinsCount++;
           break;
       }
     }
@@ -229,13 +255,6 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
         case 'swamp':
           rowString += "s";
           break;
-        // case 'ruins':
-        //   rowString += "R"
-        //   break;
-        // case 'tavern':
-        //   const isStartingTavern = tile.x === startingTavern.x && tile.y === startingTavern.y;
-        //   rowString += isStartingTavern ? "*T*" : "T";
-        //   break;
         default:
           rowString += "?";
       }
@@ -248,8 +267,8 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
     narrative: {
       mainNarrative: [
         {
-          text: `Welcome to the game! Narrative text will be written here. You start at the ${startingTavern.name} Tavern. You can interact with the world using the options on the left.
-        There are ${npcs.length} NPCs in the world, ${tiles2DArray.length} terrain tiles, and ${taverns.length} taverns.`,
+          text: `Welcome to the game! Narrative text will be written here. You will start at ${startingTavern.name} Tavern. You can interact with the world using the options on the left.
+        The world has been generated with: ${tiles2DArray.length} terrain tiles, ${ruinsCount} ruins, ${ironMinesCount} iron mines, ${taverns.length} taverns, and total ${npcs.length} NPCs.`,
           colour: "black",
         },
       ],
