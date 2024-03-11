@@ -14,16 +14,18 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
   // generate world grid
   for (let i = 0; i < worldSize; i++) {
     worldGrid[i] = [];
-    let previousXTile = 'forest';
-    let previousYTile = 'forest';
+    let previousXTile = "forest";
+    let previousYTile = "forest";
     for (let j = 0; j < worldSize; j++) {
       const randomNumber = Math.random();
-      if(i > 0) previousYTile = worldGrid[i-1][j].locationType;
+      if (i > 0) previousYTile = worldGrid[i - 1][j].locationType;
       let matchPreviousRandomFactor = Math.random();
-      let tileType = 'forest'
+      let tileType = "forest";
 
-      if (matchPreviousRandomFactor > 0.15 && previousXTile != 'unique' && previousYTile != 'unique') tileType = Math.random() > 0.5 ? previousXTile : previousYTile;
-      else if (randomNumber > 0.75) tileType = "forest"; // x2 chance
+      if (matchPreviousRandomFactor > 0.15 && previousXTile != "unique" && previousYTile != "unique")
+        tileType = Math.random() > 0.5 ? previousXTile : previousYTile;
+      else if (randomNumber > 0.75)
+        tileType = "forest"; // x2 chance
       else if (randomNumber > 0.625) tileType = "plains";
       else if (randomNumber > 0.5) tileType = "hills";
       else if (randomNumber > 0.375) tileType = "mountain";
@@ -32,12 +34,12 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
       else tileType = "swamp";
 
       const placeOfInterest = Math.random() > 0.98;
-      if(placeOfInterest) {
-        tileType = (Math.random() > 0.5) ? "ruins" : "tavern";
+      if (placeOfInterest) {
+        tileType = Math.random() > 0.5 ? "ruins" : "tavern";
       }
 
-      switch(tileType) {
-        case 'plains':
+      switch (tileType) {
+        case "plains":
           worldGrid[i][j] = {
             id: Math.floor(Math.random() * 1000000),
             name: "Plains",
@@ -47,7 +49,7 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
             y: j,
           };
           break;
-        case 'forest':
+        case "forest":
           worldGrid[i][j] = {
             id: Math.floor(Math.random() * 1000000),
             name: "Forest",
@@ -57,7 +59,7 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
             y: j,
           };
           break;
-        case 'mountain':
+        case "mountain":
           worldGrid[i][j] = {
             id: Math.floor(Math.random() * 1000000),
             name: "Mountain",
@@ -67,17 +69,17 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
             y: j,
           };
           break;
-          case 'swamp':
-            worldGrid[i][j] = {
-              id: Math.floor(Math.random() * 1000000),
-              name: "Swamp",
-              locationType: "swamp",
-              pointsOfInterest: [],
-              x: i,
-              y: j,
-            };
-            break;
-            case 'hills':
+        case "swamp":
+          worldGrid[i][j] = {
+            id: Math.floor(Math.random() * 1000000),
+            name: "Swamp",
+            locationType: "swamp",
+            pointsOfInterest: [],
+            x: i,
+            y: j,
+          };
+          break;
+        case "hills":
           worldGrid[i][j] = {
             id: Math.floor(Math.random() * 1000000),
             name: "Hills",
@@ -87,7 +89,7 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
             y: j,
           };
           break;
-          case 'desert':
+        case "desert":
           worldGrid[i][j] = {
             id: Math.floor(Math.random() * 1000000),
             name: "Desert",
@@ -97,7 +99,7 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
             y: j,
           };
           break;
-          case 'tundra':
+        case "tundra":
           worldGrid[i][j] = {
             id: Math.floor(Math.random() * 1000000),
             name: "Tundra",
@@ -117,20 +119,20 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
             y: j,
           };
       }
-      if((tileType === 'tavern') || (tileType === 'ruins')) previousXTile = 'unique'
-      else previousXTile = tileType
-      tiles2DArray.push(worldGrid[i][j])
+      if (tileType === "tavern" || tileType === "ruins") previousXTile = "unique";
+      else previousXTile = tileType;
+      tiles2DArray.push(worldGrid[i][j]);
     }
   }
 
   let ruinsCount = 0;
   let ironMinesCount = 0;
   // for each tile, fill points of interest - 2-5 each
-  tiles2DArray.forEach(tile => {
-    for(let i = 0; i < Math.floor(Math.random() * 4 + 2); i++) {
-      switch(tile.locationType) {
-        case 'forest':
-          if(Math.random() > 0.98) {
+  tiles2DArray.forEach((tile) => {
+    for (let i = 0; i < Math.floor(Math.random() * 4 + 2); i++) {
+      switch (tile.locationType) {
+        case "forest":
+          if (Math.random() > 0.98) {
             const tavern = generateTavern(tile.x, tile.y);
             tile.pointsOfInterest.push(tavern);
             taverns.push(tavern);
@@ -139,30 +141,30 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
               id: Math.floor(Math.random() * 100000),
               tileX: tile.x,
               tileY: tile.y,
-              name: 'Ruins',
-              type: 'ruins'
-            })
+              name: "Ruins",
+              type: "ruins",
+            });
             ruinsCount++;
           }
           break;
-        case 'mountain':
-          if(Math.random() > 0.98) {
+        case "mountain":
+          if (Math.random() > 0.98) {
             tile.pointsOfInterest.push({
               id: Math.floor(Math.random() * 100000),
               tileX: tile.x,
               tileY: tile.y,
-              name: 'Iron Mine',
-              type: 'ironMine'
-            })
+              name: "Iron Mine",
+              type: "ironMine",
+            });
             ironMinesCount++;
           } else {
             tile.pointsOfInterest.push({
               id: Math.floor(Math.random() * 100000),
               tileX: tile.x,
               tileY: tile.y,
-              name: 'Ruins',
-              type: 'ruins'
-            })
+              name: "Ruins",
+              type: "ruins",
+            });
             ruinsCount++;
           }
           break;
@@ -171,8 +173,8 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
             id: Math.floor(Math.random() * 100000),
             tileX: tile.x,
             tileY: tile.y,
-            name: 'Ruins',
-            type: 'ruins'
+            name: "Ruins",
+            type: "ruins",
           });
           ruinsCount++;
           break;
@@ -233,26 +235,26 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
   worldGrid.forEach((row) => {
     let rowString = "";
     row.forEach((tile) => {
-      switch(tile.locationType) {
-        case 'plains':
+      switch (tile.locationType) {
+        case "plains":
           rowString += "p";
           break;
-        case 'forest':
+        case "forest":
           rowString += "f";
           break;
-        case 'hills':
+        case "hills":
           rowString += "h";
           break;
-        case 'mountain':
-          rowString += "m"
+        case "mountain":
+          rowString += "m";
           break;
-        case 'desert':
+        case "desert":
           rowString += "d";
           break;
-        case 'tundra':
+        case "tundra":
           rowString += "t";
           break;
-        case 'swamp':
+        case "swamp":
           rowString += "s";
           break;
         default:

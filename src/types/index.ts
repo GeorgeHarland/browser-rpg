@@ -72,17 +72,16 @@ type NpcDialogueType = {
   defaultCloser: string;
 };
 
-export type TileType =
-  {
-      id: number;
-      name: string;
-      locationType: "plains" | "mountain" | "forest" | "tundra" | "desert" | "swamp" | "hills";
-      pointsOfInterest: PointOfInterest[];
-      x: number;
-      y: number;
-    };
+export type TileType = {
+  id: number;
+  name: string;
+  locationType: "plains" | "mountain" | "forest" | "tundra" | "desert" | "swamp" | "hills";
+  pointsOfInterest: PointOfInterest[];
+  x: number;
+  y: number;
+};
 
-export type PointOfInterest = 
+export type PointOfInterest =
   | {
       id: number;
       tileX: number;
@@ -94,13 +93,13 @@ export type PointOfInterest =
       flavor: string;
       bookshelf: ItemType[];
     }
-    | {
+  | {
       id: number;
       tileX: number;
       tileY: number;
       name: string;
       type: "ruins" | "ironMine";
-    }
+    };
 
 export type ItemType = {
   name: string;
