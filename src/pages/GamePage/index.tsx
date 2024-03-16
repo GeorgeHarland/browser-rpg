@@ -13,7 +13,6 @@ const GamePage = () => {
   const [showResetInput, setShowResetInput] = useState(false);
   if (!gameState) return <div>Loading...</div>;
   const { player, npcs, narrative, tiles, otherInfo }: GameStateType = gameState;
-  const tavern = otherInfo.startingTavern as PointOfInterest;
   const [options, setOptions] = useState<OptionType[]>([]);
   const [saveRequest, setSaveRequest] = useState(false);
 
@@ -134,7 +133,6 @@ const GamePage = () => {
   const generateLocationOptions = (): OptionType[] => {
     const locationOptions: OptionType[] = [];
     let viewSurroundingsString = "Nothing much to see around here."
-    console.log(player.locationId)
     if (!(player?.locationId)) {
       const tile = tiles[player.x][player.y]
       viewSurroundingsString = "The forest is peaceful. You can only hear the natural sounds of small animals."
@@ -389,6 +387,15 @@ const GamePage = () => {
   }, []);
   // }, [narrative, npcs, locations, player]);
 
+  const tile = tiles[player.x][player.y];
+  const locale = tile.pointsOfInterest.find((locale) => locale.id === player.locationId);
+  let title = 'Unknown Area'
+  if(locale) {
+    title = locale.name
+  } else {
+    title = tile.name
+  }
+
   return (
     <div style={{ display: "flex" }}>
       <div style={{ padding: "20px", minWidth: "300px" }}>
@@ -436,7 +443,7 @@ const GamePage = () => {
           minWidth: "300px",
         }}
       >
-        <ZoneTitle>{tavern.name}</ZoneTitle>
+        <ZoneTitle>{title}</ZoneTitle>
         <SpacerWithLine />
         {narrative.subtitle && (
           <SubtitleLine textcolour={narrative.subtitle.colour || "black"}>{narrative.subtitle.text}</SubtitleLine>
