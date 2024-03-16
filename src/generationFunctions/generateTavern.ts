@@ -1,5 +1,5 @@
 import { books } from "../data/books";
-import { ItemType, PointOfInterest, SizeKeys } from "../types";
+import { PointOfInterest, SizeKeys } from "../types";
 
 const tavernNameAdjectives = ["Crimson", "Emerald", "Sapphire", "Topaz", "Golden"];
 
@@ -43,12 +43,12 @@ export const generateTavern = (tileX: number, tileY: number, tileId: number, sta
       roomAmount = 10;
   }
 
-  let bookshelf: ItemType[] | null = null;
+  let bookshelf: string[] | null = null;
   if (Math.random() > 0.5) {
     bookshelf = [];
     const bookCount = Math.floor(Math.random() * 3) + 1; // 1-3
     for (let i = 0; i < bookCount; i++) {
-      const randomBook = books[Math.floor(Math.random() * books.length)];
+      const randomBook = Object.keys(books)[Math.floor(Math.random() * Object.keys(books).length)];
       bookshelf.push(randomBook);
     }
   }

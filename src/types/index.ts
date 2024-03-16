@@ -100,7 +100,7 @@ export type PointOfInterest =
       size: SizeKeys;
       rooms: number;
       flavor: string;
-      bookshelf: ItemType[] | null;
+      bookshelf: string[] | null;
     }
   | {
       id: number;
@@ -113,11 +113,25 @@ export type PointOfInterest =
     };
 
 export type ItemType = {
+  id: number;
   name: string;
   description: string;
   bookText?: string;
   basePrice: number;
 };
+
+export type MonsterType = {
+  id: number;
+  name: string;
+  description: string;
+  minHp: number;
+  maxHp: number;
+  baseExp: number;
+  baseGold: number;
+  lootTables: lootTable[];
+};
+
+export type lootTable = 'basic-beast' | 'basic-goblin'
 
 export type OptionType = {
   type: string;

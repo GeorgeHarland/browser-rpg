@@ -1,10 +1,11 @@
 import { useContext, useEffect, useState } from "react";
 import "rpg-awesome/css/rpg-awesome.min.css";
 import { NarrativeLine, OptionText, Spacer, SpacerWithLine, SubtitleLine, ZoneTitle } from "./styled";
-import { ActivityType, GameStateType, NpcType, OptionType, ancestriesRecord, ItemType, PointOfInterest, PlayerType } from "../../types";
+import { ActivityType, GameStateType, NpcType, OptionType, ancestriesRecord, PointOfInterest, PlayerType } from "../../types";
 import GameContext from "../../gameWorldState/gameContext";
 import { useNavigate } from "react-router-dom";
 import { validateGameState } from "../../gameWorldState/validateState";
+import { books } from "../../data/books";
 
 const GamePage = () => {
   const navigate = useNavigate();
@@ -82,7 +83,7 @@ const GamePage = () => {
   const generateOptions = (
     nextActivity: ActivityType = "location",
     npc: NpcType | null = null,
-    lootObject: ItemType[] | null = null
+    lootObject: string[] | null = null
   ): OptionType[] => {
     switch (nextActivity) {
       case "dialogue":
@@ -96,7 +97,9 @@ const GamePage = () => {
             reset: true,
           });
           const options: OptionType[] = [];
-          lootObject.map((item) =>
+          lootObject.map((itemId) =>
+          {
+            const item = books[itemId];
             options.push({
               type: "location",
               description: `Read ${item.name}`,
@@ -107,6 +110,7 @@ const GamePage = () => {
                   reset: true,
                 }),
             })
+          }
           );
           options.push({
             type: "spacer",
