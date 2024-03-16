@@ -12,7 +12,7 @@ const GamePage = () => {
   const dispatch = useContext(GameContext)?.dispatch;
   const [showResetInput, setShowResetInput] = useState(false);
   if (!gameState) return <div>Loading...</div>;
-  const { player, npcs, narrative, tiles, otherInfo }: GameStateType = gameState;
+  const { player, npcs, narrative, tiles }: GameStateType = gameState;
   const [options, setOptions] = useState<OptionType[]>([]);
   const [saveRequest, setSaveRequest] = useState(false);
 
@@ -103,7 +103,7 @@ const GamePage = () => {
               action: () =>
                 dispatch?.({
                   type: "UPDATE_MAIN_NARRATIVE",
-                  newNarrative: { text: item.description || "Barely legible." },
+                  newNarrative: { text: item.bookText || "Barely legible." },
                   reset: true,
                 }),
             })
@@ -387,13 +387,15 @@ const GamePage = () => {
   }, []);
   // }, [narrative, npcs, locations, player]);
 
-  const tile = tiles[player.x][player.y];
-  const locale = tile.pointsOfInterest.find((locale) => locale.id === player.locationId);
   let title = 'Unknown Area'
-  if(locale) {
-    title = locale.name
-  } else {
-    title = tile.name
+  if(player.x && player.y) {
+    const tile = tiles[player.x][player.y];
+    const locale = tile.pointsOfInterest.find((locale) => locale.id === player.locationId);
+    if(locale) {
+      title = locale.name
+    } else {
+      title = tile.name
+    }
   }
 
   return (

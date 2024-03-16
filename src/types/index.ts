@@ -100,7 +100,7 @@ export type PointOfInterest =
       size: SizeKeys;
       rooms: number;
       flavor: string;
-      bookshelf: ItemType[];
+      bookshelf: ItemType[] | null;
     }
   | {
       id: number;
@@ -115,8 +115,8 @@ export type PointOfInterest =
 export type ItemType = {
   name: string;
   description: string;
-  buyPrice: number;
-  sellPrice: number;
+  bookText?: string;
+  basePrice: number;
 };
 
 export type OptionType = {

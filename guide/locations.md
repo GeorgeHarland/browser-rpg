@@ -2,7 +2,7 @@
 
 ## Terrain Tiles
 
-(All)
+All
 - Ruins
 
 Desert - ...
