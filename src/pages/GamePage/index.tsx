@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import "rpg-awesome/css/rpg-awesome.min.css";
 import { NarrativeLine, OptionText, Spacer, SpacerWithLine, SubtitleLine, ZoneTitle } from "./styled";
-import { ActivityType, GameStateType, NpcType, OptionType, ancestriesRecord, ItemType, PointOfInterest } from "../../types";
+import { ActivityType, GameStateType, NpcType, OptionType, ancestriesRecord, ItemType, PointOfInterest, PlayerType } from "../../types";
 import GameContext from "../../gameWorldState/gameContext";
 import { useNavigate } from "react-router-dom";
 import { validateGameState } from "../../gameWorldState/validateState";
@@ -133,37 +133,44 @@ const GamePage = () => {
 
   const generateLocationOptions = (): OptionType[] => {
     const locationOptions: OptionType[] = [];
-    let viewSurroundings: OptionType = {
-      type: "location",
-      description: "View surroundings",
-      action: () =>
-        dispatch?.({
-          type: "UPDATE_MAIN_NARRATIVE",
-          newNarrative: {
-            text: "Nothing much around here.",
-          },
-          reset: true,
-        }),
-    };
+    let viewSurroundingsString = "Nothing much to see around here."
+    console.log(player.locationId)
+    if (!(player?.locationId)) {
+      const tile = tiles[player.x][player.y]
+      viewSurroundingsString = "The forest is peaceful. You can only hear the natural sounds of small animals."
+      tile.pointsOfInterest.forEach((locale) => {
+        if(locale.playerSeen) {
+          locationOptions.push({
+            type: "location",
+            description: `Go to ${locale.name}`,
+            action: () =>
+              enterArea(locale)
+          });
+        }
+      })
+      locationOptions.push({
+        type: "spacer",
+        description: "",
+      });
+      locationOptions.push({
+        type: "location",
+        description: "Explore",
+        action: () =>
+          dispatch?.({
+            type: "UPDATE_MAIN_NARRATIVE",
+            newNarrative: { text: `Nothing let to explore in this ${tile.locationType} area.` },
+            reset: true,
+          }),
+      });
+    }
     if (player?.locationId) {
       const locations = tiles[player.x][player.y].pointsOfInterest;
       const locale = locations.find((locale) => locale.id === player.locationId);
       if(locale?.type === 'tavern') {
       if(!locale) return [];
-      viewSurroundings = {
-        type: "location",
-        description: "View surroundings",
-        action: () =>
-          dispatch?.({
-            type: "UPDATE_MAIN_NARRATIVE",
-            newNarrative: {
-              text: `
-          This tavern is ${locale.size} sized. It is known for it's ${locale.flavor}.
-          `,
-            },
-            reset: true,
-          }),
-      };
+      viewSurroundingsString = `
+      This tavern is ${locale.size} sized. It is known for it's ${locale.flavor}.
+      `
       locationOptions.push({
         type: "location",
         description: "Check the noticeboard",
@@ -181,18 +188,6 @@ const GamePage = () => {
             description: "Browse bookshelf",
             action: () => setOptions(generateOptions("dialogue", null, locale.bookshelf)),
           });
-          // for(let i = 0; i < playerLocation.bookshelf.items.length; i++) {
-          //   locationOptions.push({
-          //     type: "location",
-          //     description: `Read ${playerLocation.bookshelf.items[i].name}`,
-          //     action: () =>
-          //       dispatch?.({
-          //         type: "UPDATE_MAIN_NARRATIVE",
-          //         newNarrative: { text: playerLocation.bookshelf?.items[i].description || 'Barely legible.' },
-          //         reset: true,
-          //       }),
-          //   });
-          // }
         } else {
           locationOptions.push({
             type: "location",
@@ -209,12 +204,7 @@ const GamePage = () => {
       locationOptions.push({
         type: "location",
         description: "Leave tavern",
-        action: () =>
-          dispatch?.({
-            type: "UPDATE_MAIN_NARRATIVE",
-            newNarrative: { text: "You cannot leave yet." },
-            reset: true,
-          }),
+        action: () => leaveTavern(player),
       });
     }
     }
@@ -230,6 +220,18 @@ const GamePage = () => {
     const spacer = {
       type: "spacer",
       description: "",
+    };
+    const viewSurroundings: OptionType = {
+      type: "location",
+      description: "View surroundings",
+      action: () =>
+        dispatch?.({
+          type: "UPDATE_MAIN_NARRATIVE",
+          newNarrative: {
+            text: viewSurroundingsString,
+          },
+          reset: true,
+        }),
     };
     return [viewSurroundings, spacer, ...npcOptions, spacer, ...locationOptions];
   };
@@ -298,6 +300,36 @@ const GamePage = () => {
         text: "",
       },
     });
+  };
+
+  const enterArea = (locale: PointOfInterest) => {
+    player.locationId = locale.id;
+    player.locationType = locale.type;
+    dispatch?.({
+      type: "PLAYER_ENTERS_AREA",
+      id: locale.id,
+      localeType: locale.type,
+    })
+    dispatch?.({
+      type: "UPDATE_MAIN_NARRATIVE",
+      newNarrative: { text: `Entered ${locale.name}.` },
+      reset: true,
+    })
+    setOptions(generateOptions('location'));
+  }
+
+  const leaveTavern = (player: PlayerType) => {
+    player.locationId = null;
+    player.locationType = null;
+    dispatch?.({
+      type: "PLAYER_LEAVES_AREA",
+    })
+    setOptions(generateOptions('location'));
+    dispatch?.({
+      type: "UPDATE_MAIN_NARRATIVE",
+      newNarrative: { text: `You left the tavern.` },
+      reset: true,
+    })
   };
 
   const playDiceGame = (npc: NpcType) => {

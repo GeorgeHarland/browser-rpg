@@ -14,6 +14,8 @@ export type GameStateType = {
 
 export type GameAction =
   | { type: "LOAD_STATE"; stateToLoad: GameStateType }
+  | { type: "PLAYER_ENTERS_AREA"; id: number; localeType: string}
+  | { type: "PLAYER_LEAVES_AREA"}
   | { type: "SAVE_OPTIONS_TO_STATE"; optionsToAdd: OptionType[] }
   | { type: "UPDATE_GOLD"; amount: number }
   | {
@@ -94,6 +96,7 @@ export type PointOfInterest =
       tileY: number;
       name: string;
       type: "tavern";
+      playerSeen: boolean;
       size: SizeKeys;
       rooms: number;
       flavor: string;
@@ -106,6 +109,7 @@ export type PointOfInterest =
       tileY: number;
       name: string;
       type: "ruins" | "ironMine";
+      playerSeen: boolean;
     };
 
 export type ItemType = {

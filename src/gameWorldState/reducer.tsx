@@ -4,6 +4,24 @@ const gameReducer = (state: GameStateType, action: GameAction): GameStateType =>
   switch (action.type) {
     case "LOAD_STATE":
       return action.stateToLoad;
+    case "PLAYER_ENTERS_AREA":
+      return {
+        ...state,
+        player: {
+          ...state.player,
+          locationId: action.id,
+          locationType: action.localeType,
+        }
+      }
+    case "PLAYER_LEAVES_AREA":
+      return {
+        ...state,
+        player: {
+          ...state.player,
+          locationId: null,
+          locationType: null,
+        }
+      }
     case "SAVE_OPTIONS_TO_STATE":
       return {
         ...state,

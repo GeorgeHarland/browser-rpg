@@ -133,7 +133,7 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
       switch (tile.locationType) {
         case "forest":
           if (Math.random() > 0.98) {
-            const tavern = generateTavern(tile.x, tile.y, tile.id);
+            const tavern = generateTavern(tile.x, tile.y, tile.id, false);
             tile.pointsOfInterest.push(tavern);
             taverns.push(tavern);
           } else {
@@ -144,6 +144,7 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
               tileId: tile.id,
               name: "Ruins",
               type: "ruins",
+              playerSeen: false,
             });
             ruinsCount++;
           }
@@ -157,6 +158,7 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
               tileId: tile.id,
               name: "Iron Mine",
               type: "ironMine",
+              playerSeen: false,
             });
             ironMinesCount++;
           } else {
@@ -167,6 +169,7 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
               tileId: tile.id,
               name: "Ruins",
               type: "ruins",
+              playerSeen: false,
             });
             ruinsCount++;
           }
@@ -179,6 +182,7 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
             tileId: tile.id,
             name: "Ruins",
             type: "ruins",
+            playerSeen: false,
           });
           ruinsCount++;
           break;
@@ -189,7 +193,7 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
   // at least one tavern must exist
   if (taverns.length === 0) {
     const tile = tiles2DArray[Math.floor(Math.random() * tiles2DArray.length)];
-    const tavern = generateTavern(tile.x, tile.y, tile.id);
+    const tavern = generateTavern(tile.x, tile.y, tile.id, false);
     worldGrid[tile.x][tile.y].pointsOfInterest.push(tavern);
     taverns.push(tavern);
   }
@@ -219,6 +223,7 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
   });
 
   const startingTavern = taverns[Math.floor(Math.random() * taverns.length)];
+  startingTavern.playerSeen = true;
 
   const player = {
     firstName: playerFirstName,
