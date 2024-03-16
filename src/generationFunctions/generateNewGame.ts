@@ -133,7 +133,7 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
       switch (tile.locationType) {
         case "forest":
           if (Math.random() > 0.98) {
-            const tavern = generateTavern(tile.x, tile.y);
+            const tavern = generateTavern(tile.x, tile.y, tile.id);
             tile.pointsOfInterest.push(tavern);
             taverns.push(tavern);
           } else {
@@ -141,6 +141,7 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
               id: Math.floor(Math.random() * 100000),
               tileX: tile.x,
               tileY: tile.y,
+              tileId: tile.id,
               name: "Ruins",
               type: "ruins",
             });
@@ -153,6 +154,7 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
               id: Math.floor(Math.random() * 100000),
               tileX: tile.x,
               tileY: tile.y,
+              tileId: tile.id,
               name: "Iron Mine",
               type: "ironMine",
             });
@@ -162,6 +164,7 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
               id: Math.floor(Math.random() * 100000),
               tileX: tile.x,
               tileY: tile.y,
+              tileId: tile.id,
               name: "Ruins",
               type: "ruins",
             });
@@ -173,6 +176,7 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
             id: Math.floor(Math.random() * 100000),
             tileX: tile.x,
             tileY: tile.y,
+            tileId: tile.id,
             name: "Ruins",
             type: "ruins",
           });
@@ -184,10 +188,9 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
 
   // at least one tavern must exist
   if (taverns.length === 0) {
-    const x = Math.floor(Math.random() * worldSize);
-    const y = Math.floor(Math.random() * worldSize);
-    const tavern = generateTavern(x, y);
-    worldGrid[x][y].pointsOfInterest.push(tavern);
+    const tile = tiles2DArray[Math.floor(Math.random() * tiles2DArray.length)];
+    const tavern = generateTavern(tile.x, tile.y, tile.id);
+    worldGrid[tile.x][tile.y].pointsOfInterest.push(tavern);
     taverns.push(tavern);
   }
 
@@ -210,7 +213,7 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
         break;
     }
     for (let i = 0; i < npcCount; i++) {
-      const npc = generateNpc(tavern.tileX, tavern.tileY);
+      const npc = generateNpc(tavern.id, tavern.type, tavern.tileX, tavern.tileY);
       npcs.push(npc);
     }
   });
@@ -226,7 +229,9 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
     gold: 10,
     exp: 0,
     inventory: [],
-    currentLocation: startingTavern.id,
+    locationId: startingTavern.id,
+    locationType: 'tavern',
+    tileId: startingTavern.tileId,
     x: startingTavern.tileX,
     y: startingTavern.tileY,
   };
@@ -270,7 +275,7 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
       mainNarrative: [
         {
           text: `Welcome to the game! Narrative text will be written here. You will start at ${startingTavern.name} Tavern. You can interact with the world using the options on the left.
-        The world has been generated with: ${tiles2DArray.length} terrain tiles, ${ruinsCount} ruins, ${ironMinesCount} iron mines, ${taverns.length} taverns, and total ${npcs.length} NPCs.`,
+        The world has been generated with: ${tiles2DArray.length} terrain tiles, ${ruinsCount} ruins, ${ironMinesCount} iron mines, ${taverns.length} taverns, and ${npcs.length} total NPCs.`,
           colour: "black",
         },
       ],

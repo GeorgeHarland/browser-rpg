@@ -34,6 +34,9 @@ export type PlayerType = {
   gold: number;
   exp: number;
   inventory: ItemType[];
+  locationId: number | null;
+  locationType: string | null;
+  tileId: number;
   x: number;
   y: number;
 };
@@ -63,8 +66,10 @@ export type NpcType = {
   inventory: ItemType[];
   currentLocation: number;
   dialogue: NpcDialogueType;
-  x: number;
-  y: number;
+  locationId: number;
+  locationType: string;
+  tileX: number;
+  tileY: number;
 };
 
 type NpcDialogueType = {
@@ -84,6 +89,7 @@ export type TileType = {
 export type PointOfInterest =
   | {
       id: number;
+      tileId: number;
       tileX: number;
       tileY: number;
       name: string;
@@ -95,6 +101,7 @@ export type PointOfInterest =
     }
   | {
       id: number;
+      tileId: number;
       tileX: number;
       tileY: number;
       name: string;

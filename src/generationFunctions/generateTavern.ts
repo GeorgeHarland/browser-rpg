@@ -73,7 +73,7 @@ const books: ItemType[] = [
   },
 ];
 
-export const generateTavern = (tileX: number, tileY: number): PointOfInterest => {
+export const generateTavern = (tileX: number, tileY: number, tileId: number): PointOfInterest => {
   const randomAdjective = tavernNameAdjectives[Math.floor(Math.random() * tavernNameAdjectives.length)];
   const randomNoun = tavernNameNouns[Math.floor(Math.random() * tavernNameNouns.length)];
   const randomName = `The ${randomAdjective} ${randomNoun}`;
@@ -112,6 +112,7 @@ export const generateTavern = (tileX: number, tileY: number): PointOfInterest =>
     id: Math.floor(Math.random() * 1000000),
     tileX: tileX,
     tileY: tileY,
+    tileId: tileId,
     name: randomName,
     type: "tavern",
     size: randomSize,

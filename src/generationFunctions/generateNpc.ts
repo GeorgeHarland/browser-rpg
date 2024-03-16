@@ -70,7 +70,7 @@ const openers = [
 
 const closers = ["I was busy anyway.", "Goodbye.", "...", "Okay...", "See you.", "Well that was a waste of time..."];
 
-export const generateNpc = (x: number, y: number): NpcType => {
+export const generateNpc = (locationID: number, locationType: string, tileX: number, tileY: number): NpcType => {
   const id = Math.floor(Math.random() * 1000000);
   const firstName = getRandomElement(firstNames);
   const lastName = getRandomElement(secondNames);
@@ -94,7 +94,9 @@ export const generateNpc = (x: number, y: number): NpcType => {
       defaultOpener: getRandomElement(openers),
       defaultCloser: getRandomElement(closers),
     },
-    x: x,
-    y: y,
+    locationId: locationID,
+    locationType: locationType,
+    tileX: tileX,
+    tileY: tileY,
   };
 };

@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import "rpg-awesome/css/rpg-awesome.min.css";
 import { NarrativeLine, OptionText, Spacer, SpacerWithLine, SubtitleLine, ZoneTitle } from "./styled";
-import { ActivityType, GameStateType, TileType, NpcType, OptionType, ancestriesRecord, ItemType } from "../../types";
+import { ActivityType, GameStateType, NpcType, OptionType, ancestriesRecord, ItemType, PointOfInterest } from "../../types";
 import GameContext from "../../gameWorldState/gameContext";
 import { useNavigate } from "react-router-dom";
 import { validateGameState } from "../../gameWorldState/validateState";
@@ -13,7 +13,7 @@ const GamePage = () => {
   const [showResetInput, setShowResetInput] = useState(false);
   if (!gameState) return <div>Loading...</div>;
   const { player, npcs, narrative, tiles, otherInfo }: GameStateType = gameState;
-  const tavern = otherInfo.startingTavern as TileType;
+  const tavern = otherInfo.startingTavern as PointOfInterest;
   const [options, setOptions] = useState<OptionType[]>([]);
   const [saveRequest, setSaveRequest] = useState(false);
 
@@ -132,7 +132,6 @@ const GamePage = () => {
   };
 
   const generateLocationOptions = (): OptionType[] => {
-    const playerLocation = tiles[player.x][player.y] as TileType;
     const locationOptions: OptionType[] = [];
     let viewSurroundings: OptionType = {
       type: "location",
@@ -146,7 +145,11 @@ const GamePage = () => {
           reset: true,
         }),
     };
-    if (playerLocation?.locationType === "tavern") {
+    if (player?.locationId) {
+      const locations = tiles[player.x][player.y].pointsOfInterest;
+      const locale = locations.find((locale) => locale.id === player.locationId);
+      if(locale?.type === 'tavern') {
+      if(!locale) return [];
       viewSurroundings = {
         type: "location",
         description: "View surroundings",
@@ -155,7 +158,7 @@ const GamePage = () => {
             type: "UPDATE_MAIN_NARRATIVE",
             newNarrative: {
               text: `
-          This tavern is ${playerLocation.size} sized. It is known for it's ${playerLocation.flavor}.
+          This tavern is ${locale.size} sized. It is known for it's ${locale.flavor}.
           `,
             },
             reset: true,
@@ -171,12 +174,12 @@ const GamePage = () => {
             reset: true,
           }),
       });
-      if (playerLocation.bookshelf) {
-        if (playerLocation.bookshelf.length > 0) {
+      if (locale.bookshelf) {
+        if (locale.bookshelf.length > 0) {
           locationOptions.push({
             type: "location",
             description: "Browse bookshelf",
-            action: () => setOptions(generateOptions("dialogue", null, playerLocation.bookshelf)),
+            action: () => setOptions(generateOptions("dialogue", null, locale.bookshelf)),
           });
           // for(let i = 0; i < playerLocation.bookshelf.items.length; i++) {
           //   locationOptions.push({
@@ -214,8 +217,9 @@ const GamePage = () => {
           }),
       });
     }
+    }
 
-    const npcsInLocation = npcs.filter((npc) => tiles[npc.x][npc.y].id === playerLocation.id);
+    const npcsInLocation = npcs.filter((npc) => npc.locationId === player.locationId);
     const npcOptions = npcsInLocation.map((npc) => ({
       type: "npc",
       description: `Speak to ${npc.firstName} ${npc.lastName}, a ${ancestriesRecord[npc.ancestry].adj}${" "}
