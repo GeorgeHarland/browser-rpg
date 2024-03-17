@@ -53,6 +53,7 @@ export const GamePage = () => {
   };
 
   const updateGold = (changeAmount: number, reset: boolean = true) => {
+    player.gold += changeAmount;
     dispatch?.({ type: "UPDATE_GOLD", amount: changeAmount });
     if (
       narrative.mainNarrative[0].text ===
@@ -76,8 +77,9 @@ export const GamePage = () => {
     }
   };
 
-  const updateNpcGold = (npcId: number, changeAmount: number) => {
-    dispatch?.({ type: "UPDATE_NPC_GOLD", npcId: npcId, amount: changeAmount });
+  const updateNpcGold = (npc: NpcType, changeAmount: number) => {
+    npc.gold += changeAmount;
+    dispatch?.({ type: "UPDATE_NPC_GOLD", npcId: npc.id, amount: changeAmount });
   };
 
   const generateOptions = (
@@ -139,7 +141,7 @@ export const GamePage = () => {
     let viewSurroundingsString = "Nothing much to see around here."
     if (!(player?.locationId)) {
       const tile = tiles[player.x][player.y]
-      viewSurroundingsString = "The forest is peaceful. You can only hear the natural sounds of small animals."
+      viewSurroundingsString = "The forest is quiet and peaceful. You can hear the sounds of small animals and a nearby stream."
       tile.pointsOfInterest.forEach((locale) => {
         if(locale.playerSeen) {
           locationOptions.push({
@@ -252,14 +254,36 @@ export const GamePage = () => {
       },
       reset: true,
     });
-    if (npc.profession === "Gambler") {
-      if (npc.gold > 0) {
-        options.push({
-          type: "npc",
-          description: "Play dice game (roll 2d6) - 1 gold to play",
-          action: () => playDiceGame(npc),
-        });
-      }
+    switch(npc.profession) {
+      case "Gambler":
+        if (npc.gold < 1) {
+          dispatch?.({
+            type: "UPDATE_MAIN_NARRATIVE",
+            newNarrative: {
+              text: `They don't have enough gold to play any more games.`,
+            },
+          });
+        }
+        if (player.gold < 1) {
+          dispatch?.({
+            type: "UPDATE_MAIN_NARRATIVE",
+            newNarrative: {
+              text: `You don't have enough gold to play any games.`,
+            },
+          });
+        }
+        if(player.gold >= 1 && npc.gold >= 1) {
+          options.push({
+            type: "npc",
+            description: "Play dice game (roll 2d6) - 1 gold to play",
+            action: () => playDiceGame(npc),
+          });
+        }
+        break;
+      case "Herbalist":
+        break;
+      default:
+        break;
     }
     options.push({
       type: "npc",
@@ -365,7 +389,7 @@ export const GamePage = () => {
         },
       });
       updateGold(1, false);
-      updateNpcGold(npc.id, -1);
+      updateNpcGold(npc, -1);
     } else if (oTotal > pTotal) {
       dispatch?.({
         type: "UPDATE_MAIN_NARRATIVE",
@@ -374,7 +398,7 @@ export const GamePage = () => {
         },
       });
       updateGold(-1, false);
-      updateNpcGold(npc.id, 1);
+      updateNpcGold(npc, 1);
     } else {
       dispatch?.({
         type: "UPDATE_MAIN_NARRATIVE",
@@ -383,6 +407,7 @@ export const GamePage = () => {
         },
       });
     }
+    setOptions(generateOptions('dialogue', npc));
   };
 
   useEffect(() => {

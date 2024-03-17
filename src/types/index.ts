@@ -153,7 +153,7 @@ export const ancestriesRecord: Record<AncestryKeys, AncestryType> = {
   Elf: {
     name: "Elf",
     adj: "Elven",
-    baseMaxHp: 12,
+    baseMaxHp: 9,
   },
   Dwarf: {
     name: "Dwarf",
@@ -178,11 +178,7 @@ export type AncestryType = {
 export const professionsRecord: Record<ProfessionKeys, ProfessionType> = {
   Bartender: {
     name: "Bartender",
-    incomeFactor: 20,
-  },
-  Carpenter: {
-    name: "Carpenter",
-    incomeFactor: 8,
+    incomeFactor: 18,
   },
   Deserter: {
     name: "Deserter",
@@ -190,11 +186,15 @@ export const professionsRecord: Record<ProfessionKeys, ProfessionType> = {
   },
   Gambler: {
     name: "Gambler",
-    incomeFactor: 8,
+    incomeFactor: 7,
+  },
+  Herbalist: {
+    name: "Herbalist",
+    incomeFactor: 10,
   },
 };
 
-export type ProfessionKeys = "Bartender" | "Carpenter" | "Deserter" | "Gambler";
+export type ProfessionKeys = "Bartender" | "Deserter" | "Gambler" | "Herbalist";
 
 export type ProfessionType = {
   name: string;
