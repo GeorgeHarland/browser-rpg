@@ -13,8 +13,9 @@ export type GameStateType = {
 };
 
 export type GameAction =
-  | { type: "BUY_ITEM"; itemId: number; npcId: number; cost: number}
+  | { type: "BUY_ITEM"; itemId: number; npcId: number; cost: number }
   | { type: "LOAD_STATE"; stateToLoad: GameStateType }
+  | { type: "PLAY_DICE_GAME"; npc: NpcType }
   | { type: "PLAYER_ENTERS_AREA"; id: number; localeType: string }
   | { type: "PLAYER_LEAVES_AREA" }
   | { type: "SAVE_OPTIONS_TO_STATE"; optionsToAdd: OptionType[] }

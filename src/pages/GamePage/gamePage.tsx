@@ -65,7 +65,7 @@ export const GamePage = () => {
   const buyItem = (item: ItemType, npc: NpcType) => {
     dispatch?.({ type: "BUY_ITEM", itemId: item.id, npcId: npc.id, cost: item.basePrice });
     setTimeout(() => setOptions(generateOptions("dialogue", npc, null, true)), 5);
-  }
+  };
 
   const generateOptions = (
     nextActivity: ActivityType = "location",
@@ -242,29 +242,11 @@ export const GamePage = () => {
     }
     switch (npc.profession) {
       case "Gambler":
-        if (npc.gold < 1) {
-          dispatch?.({
-            type: "UPDATE_MAIN_NARRATIVE",
-            newNarrative: {
-              text: `They don't have enough gold to play any more games.`,
-            },
-          });
-        }
-        if (player.gold < 1) {
-          dispatch?.({
-            type: "UPDATE_MAIN_NARRATIVE",
-            newNarrative: {
-              text: `You don't have enough gold to play any games.`,
-            },
-          });
-        }
-        if (player.gold >= 1 && npc.gold >= 1) {
-          options.push({
-            type: "npc",
-            description: "Play dice game (roll 2d6) - 1 gold to play",
-            action: () => playDiceGame(npc),
-          });
-        }
+        options.push({
+          type: "npc",
+          description: "Play dice game (roll 2d6) - 1 gold to play",
+          action: () => playDiceGame(npc),
+        });
         break;
       case "Herbalist":
         // sells any potions in their inventory
@@ -353,56 +335,8 @@ export const GamePage = () => {
   };
 
   const playDiceGame = (npc: NpcType) => {
-    const playerRoll1 = Math.floor(Math.random() * 6) + 1;
-    const playerRoll2 = Math.floor(Math.random() * 6) + 1;
-    const pTotal = playerRoll1 + playerRoll2;
-
-    dispatch?.({
-      type: "UPDATE_MAIN_NARRATIVE",
-      newNarrative: {
-        text: `You rolled a ${playerRoll1} and a ${playerRoll2}, totaling ${pTotal}.`,
-      },
-      reset: true,
-    });
-
-    const opponentRoll1 = Math.floor(Math.random() * 6) + 1;
-    const opponentRoll2 = Math.floor(Math.random() * 6) + 1;
-    const oTotal = opponentRoll1 + opponentRoll2;
-
-    dispatch?.({
-      type: "UPDATE_MAIN_NARRATIVE",
-      newNarrative: {
-        text: `${npc.firstName} rolled a ${opponentRoll1} and a ${opponentRoll2}, totaling ${oTotal}.`,
-      },
-    });
-
-    if (pTotal > oTotal) {
-      dispatch?.({
-        type: "UPDATE_MAIN_NARRATIVE",
-        newNarrative: {
-          text: `You win!`,
-        },
-      });
-      dispatch?.({ type: "UPDATE_GOLD", amount: 1, reset: false });
-      // updateNpcGold(npc, -1);
-    } else if (oTotal > pTotal) {
-      dispatch?.({
-        type: "UPDATE_MAIN_NARRATIVE",
-        newNarrative: {
-          text: `You lose!`,
-        },
-      });
-      dispatch?.({ type: "UPDATE_GOLD", amount: -1, reset: false });
-      // updateNpcGold(npc, 1);
-    } else {
-      dispatch?.({
-        type: "UPDATE_MAIN_NARRATIVE",
-        newNarrative: {
-          text: `You both draw!`,
-        },
-      });
-    }
-    setOptions(generateOptions("dialogue", npc, null, true));
+    dispatch?.({ type: "PLAY_DICE_GAME", npc: npc });
+    setTimeout(() => setOptions(generateOptions("dialogue", npc, null, true)), 5);
   };
 
   useEffect(() => {
