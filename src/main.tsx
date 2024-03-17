@@ -2,9 +2,9 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
-import GamePage from "./pages/GamePage";
+import { GamePage } from "./pages/GamePage";
 import { GameProvider } from "./gameWorldState/gameContext";
-import Home from "./pages/Home";
+import { Home } from "./pages/Home";
 
 const router = createBrowserRouter([
   {

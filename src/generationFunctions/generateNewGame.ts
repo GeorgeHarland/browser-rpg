@@ -18,7 +18,7 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
     let previousYTile = "forest";
     for (let j = 0; j < worldSize; j++) {
       const randomNumber = Math.random();
-      if (i > 0) previousYTile = worldGrid[i - 1][j].locationType;
+      if (i > 0) previousYTile = worldGrid[i - 1][j].terrainType;
       let matchPreviousRandomFactor = Math.random();
       let tileType = "forest";
 
@@ -43,7 +43,7 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
           worldGrid[i][j] = {
             id: Math.floor(Math.random() * 1000000),
             name: "Plains",
-            locationType: "plains",
+            terrainType: "plains",
             pointsOfInterest: [],
             x: i,
             y: j,
@@ -53,7 +53,7 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
           worldGrid[i][j] = {
             id: Math.floor(Math.random() * 1000000),
             name: "Forest",
-            locationType: "forest",
+            terrainType: "forest",
             pointsOfInterest: [],
             x: i,
             y: j,
@@ -63,7 +63,7 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
           worldGrid[i][j] = {
             id: Math.floor(Math.random() * 1000000),
             name: "Mountain",
-            locationType: "mountain",
+            terrainType: "mountain",
             pointsOfInterest: [],
             x: i,
             y: j,
@@ -73,7 +73,7 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
           worldGrid[i][j] = {
             id: Math.floor(Math.random() * 1000000),
             name: "Swamp",
-            locationType: "swamp",
+            terrainType: "swamp",
             pointsOfInterest: [],
             x: i,
             y: j,
@@ -83,7 +83,7 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
           worldGrid[i][j] = {
             id: Math.floor(Math.random() * 1000000),
             name: "Hills",
-            locationType: "hills",
+            terrainType: "hills",
             pointsOfInterest: [],
             x: i,
             y: j,
@@ -93,7 +93,7 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
           worldGrid[i][j] = {
             id: Math.floor(Math.random() * 1000000),
             name: "Desert",
-            locationType: "desert",
+            terrainType: "desert",
             pointsOfInterest: [],
             x: i,
             y: j,
@@ -103,7 +103,7 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
           worldGrid[i][j] = {
             id: Math.floor(Math.random() * 1000000),
             name: "Tundra",
-            locationType: "tundra",
+            terrainType: "tundra",
             pointsOfInterest: [],
             x: i,
             y: j,
@@ -113,7 +113,7 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
           worldGrid[i][j] = {
             id: Math.floor(Math.random() * 1000000),
             name: "Forest",
-            locationType: "forest",
+            terrainType: "forest",
             pointsOfInterest: [],
             x: i,
             y: j,
@@ -130,10 +130,10 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
   // for each tile, fill points of interest - 2-5 each
   tiles2DArray.forEach((tile) => {
     for (let i = 0; i < Math.floor(Math.random() * 4 + 2); i++) {
-      switch (tile.locationType) {
+      switch (tile.terrainType) {
         case "forest":
           if (Math.random() > 0.98) {
-            const tavern = generateTavern(tile.x, tile.y, tile.id, false);
+            const tavern = generateTavern(tile);
             tile.pointsOfInterest.push(tavern);
             taverns.push(tavern);
           } else {
@@ -142,6 +142,7 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
               tileX: tile.x,
               tileY: tile.y,
               tileId: tile.id,
+              tileTerrainType: tile.terrainType,
               name: "Ruins",
               type: "ruins",
               playerSeen: false,
@@ -156,6 +157,7 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
               tileX: tile.x,
               tileY: tile.y,
               tileId: tile.id,
+              tileTerrainType: tile.terrainType,
               name: "Iron Mine",
               type: "ironMine",
               playerSeen: false,
@@ -167,6 +169,7 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
               tileX: tile.x,
               tileY: tile.y,
               tileId: tile.id,
+              tileTerrainType: tile.terrainType,
               name: "Ruins",
               type: "ruins",
               playerSeen: false,
@@ -180,6 +183,7 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
             tileX: tile.x,
             tileY: tile.y,
             tileId: tile.id,
+            tileTerrainType: tile.terrainType,
             name: "Ruins",
             type: "ruins",
             playerSeen: false,
@@ -193,37 +197,41 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
   // at least one tavern must exist
   if (taverns.length === 0) {
     const tile = tiles2DArray[Math.floor(Math.random() * tiles2DArray.length)];
-    const tavern = generateTavern(tile.x, tile.y, tile.id, false);
+    const tavern = generateTavern(tile);
     worldGrid[tile.x][tile.y].pointsOfInterest.push(tavern);
     taverns.push(tavern);
   }
 
-  // gen NPCs for each tavern, set starting loc to that tavern
+  const startingTavern = taverns[Math.floor(Math.random() * taverns.length)];
+  if(startingTavern.type === "tavern") {
+    startingTavern.playerSeen = true;
+    startingTavern.size = "medium";
+    startingTavern.rooms = Math.floor(Math.random() * 4) + 5; // 5-8
+  }
+
+  // set NPCs in each tavern
   taverns.forEach((tavern) => {
     if (tavern.type !== "tavern") return;
     let npcCount = 0;
     switch (tavern.size) {
       case "small":
-        npcCount = Math.floor(Math.random() * 3) + 1; // 1-3
+        npcCount = Math.floor(Math.random() * 2) + 2; // 2-3
         break;
       case "medium":
-        npcCount = Math.floor(Math.random() * 3) + 2; // 2-4
+        npcCount = Math.floor(Math.random() * 3) + 3; // 3-5
         break;
       case "large":
-        npcCount = Math.floor(Math.random() * 4) + 3; // 3-6
+        npcCount = Math.floor(Math.random() * 3) + 5; // 5-7
         break;
       case "huge":
-        npcCount = Math.floor(Math.random() * 5) + 4; // 4-8
+        npcCount = Math.floor(Math.random() * 6) + 7; // 7-12
         break;
     }
     for (let i = 0; i < npcCount; i++) {
       const npc = generateNpc(tavern.id, tavern.type, tavern.tileX, tavern.tileY);
       npcs.push(npc);
     }
-  });
-
-  const startingTavern = taverns[Math.floor(Math.random() * taverns.length)];
-  startingTavern.playerSeen = true;
+  });  
 
   const player = {
     firstName: playerFirstName,
@@ -245,7 +253,7 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
   worldGrid.forEach((row) => {
     let rowString = "";
     row.forEach((tile) => {
-      switch (tile.locationType) {
+      switch (tile.terrainType) {
         case "plains":
           rowString += "p";
           break;

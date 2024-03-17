@@ -5,7 +5,7 @@ import GameContext from "../../gameWorldState/gameContext";
 import { generateNewGame } from "../../generationFunctions/generateNewGame";
 import { validateGameState } from "../../gameWorldState/validateState";
 
-const Home = () => {
+export const Home = () => {
   const navigate = useNavigate();
   const dispatch = useContext(GameContext)?.dispatch;
   const [playerFirstName, setPlayerFirstName] = useState("Tom");
@@ -63,5 +63,3 @@ const Home = () => {
     </div>
   );
 };
-
-export default Home;

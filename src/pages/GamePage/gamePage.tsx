@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { validateGameState } from "../../gameWorldState/validateState";
 import { books } from "../../data/books";
 
-const GamePage = () => {
+export const GamePage = () => {
   const navigate = useNavigate();
   const gameState = useContext(GameContext)?.state;
   const dispatch = useContext(GameContext)?.dispatch;
@@ -160,7 +160,7 @@ const GamePage = () => {
         action: () =>
           dispatch?.({
             type: "UPDATE_MAIN_NARRATIVE",
-            newNarrative: { text: `Nothing let to explore in this ${tile.locationType} area.` },
+            newNarrative: { text: `Nothing let to explore in this ${tile.terrainType} area.` },
             reset: true,
           }),
       });
@@ -171,8 +171,7 @@ const GamePage = () => {
       if(locale?.type === 'tavern') {
       if(!locale) return [];
       viewSurroundingsString = `
-      This tavern is ${locale.size} sized. It is known for it's ${locale.flavor}.
-      `
+      ${locale.name} is a ${locale.size} sized ${locale.type} and has ${locale.rooms} total rooms. It is known for it's ${locale.flavor}. ${locale.bookshelf ? " There is a bookshelf in the corner. " : ""}Outside the window you can see the surrounding area is ${locale.tileTerrainType}.`
       locationOptions.push({
         type: "location",
         description: "Check the noticeboard",
@@ -469,4 +468,3 @@ const GamePage = () => {
   );
 };
 
-export default GamePage;

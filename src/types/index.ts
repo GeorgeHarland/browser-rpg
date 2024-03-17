@@ -82,11 +82,13 @@ type NpcDialogueType = {
 export type TileType = {
   id: number;
   name: string;
-  locationType: "plains" | "mountain" | "forest" | "tundra" | "desert" | "swamp" | "hills";
+  terrainType: TerrainType;
   pointsOfInterest: PointOfInterest[];
   x: number;
   y: number;
 };
+
+export type TerrainType = "plains" | "mountain" | "forest" | "tundra" | "desert" | "swamp" | "hills";
 
 export type PointOfInterest =
   | {
@@ -94,6 +96,7 @@ export type PointOfInterest =
       tileId: number;
       tileX: number;
       tileY: number;
+      tileTerrainType: TerrainType;
       name: string;
       type: "tavern";
       playerSeen: boolean;
@@ -107,6 +110,7 @@ export type PointOfInterest =
       tileId: number;
       tileX: number;
       tileY: number;
+      tileTerrainType: TerrainType;
       name: string;
       type: "ruins" | "ironMine";
       playerSeen: boolean;
@@ -126,6 +130,7 @@ export type MonsterType = {
   description: string;
   minHp: number;
   maxHp: number;
+  baseAtk: number;
   baseExp: number;
   baseGold: number;
   lootTables: lootTable[];

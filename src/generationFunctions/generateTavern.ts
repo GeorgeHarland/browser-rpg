@@ -1,5 +1,5 @@
 import { books } from "../data/books";
-import { PointOfInterest, SizeKeys } from "../types";
+import { PointOfInterest, SizeKeys, TileType } from "../types";
 
 const tavernNameAdjectives = ["Crimson", "Emerald", "Sapphire", "Topaz", "Golden"];
 
@@ -17,7 +17,7 @@ const tavernFeatures = [
   "Talking Parrots",
 ];
 
-export const generateTavern = (tileX: number, tileY: number, tileId: number, startingTavern: boolean): PointOfInterest => {
+export const generateTavern = (tile: TileType): PointOfInterest => {
   const randomAdjective = tavernNameAdjectives[Math.floor(Math.random() * tavernNameAdjectives.length)];
   const randomNoun = tavernNameNouns[Math.floor(Math.random() * tavernNameNouns.length)];
   const randomName = `The ${randomAdjective} ${randomNoun}`;
@@ -37,7 +37,7 @@ export const generateTavern = (tileX: number, tileY: number, tileId: number, sta
       roomAmount = Math.floor(Math.random() * 4) + 7; // 7-10
       break;
     case "huge":
-      roomAmount = Math.floor(Math.random() * 6) + 11; // 11-16
+      roomAmount = Math.floor(Math.random() * 5) + 12; // 12-16
       break;
     default:
       roomAmount = 10;
@@ -55,12 +55,13 @@ export const generateTavern = (tileX: number, tileY: number, tileId: number, sta
 
   return {
     id: Math.floor(Math.random() * 1000000),
-    tileX: tileX,
-    tileY: tileY,
-    tileId: tileId,
+    tileX: tile.x,
+    tileY: tile.y,
+    tileId: tile.id,
+    tileTerrainType: tile.terrainType,
     name: randomName,
     type: "tavern",
-    playerSeen: startingTavern ? true : false,
+    playerSeen: false,
     size: randomSize,
     rooms: roomAmount,
     flavor: randomFeature,
