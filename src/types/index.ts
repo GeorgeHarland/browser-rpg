@@ -13,11 +13,12 @@ export type GameStateType = {
 };
 
 export type GameAction =
+  | { type: "BUY_ITEM"; itemId: number; npcId: number; cost: number}
   | { type: "LOAD_STATE"; stateToLoad: GameStateType }
-  | { type: "PLAYER_ENTERS_AREA"; id: number; localeType: string}
-  | { type: "PLAYER_LEAVES_AREA"}
+  | { type: "PLAYER_ENTERS_AREA"; id: number; localeType: string }
+  | { type: "PLAYER_LEAVES_AREA" }
   | { type: "SAVE_OPTIONS_TO_STATE"; optionsToAdd: OptionType[] }
-  | { type: "UPDATE_GOLD"; amount: number }
+  | { type: "UPDATE_GOLD"; amount: number; reset: boolean }
   | {
       type: "UPDATE_MAIN_NARRATIVE";
       newNarrative: NarrativeLine;
@@ -136,7 +137,7 @@ export type MonsterType = {
   lootTables: lootTable[];
 };
 
-export type lootTable = 'basic-beast' | 'basic-goblin'
+export type lootTable = "basic-beast" | "basic-goblin";
 
 export type OptionType = {
   type: string;

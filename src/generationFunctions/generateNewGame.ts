@@ -203,7 +203,7 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
   }
 
   const startingTavern = taverns[Math.floor(Math.random() * taverns.length)];
-  if(startingTavern.type === "tavern") {
+  if (startingTavern.type === "tavern") {
     startingTavern.playerSeen = true;
     startingTavern.size = "medium";
     startingTavern.rooms = Math.floor(Math.random() * 4) + 5; // 5-8
@@ -240,7 +240,7 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
       inventory.push(100001); // 1 Minor Healing Potion
       Math.random() > 0.5 && inventory.push(100001); // 50% chance of a second Minor Healing Potion
       Math.random() > 0.5 && inventory.push(100002); // 50% chance of 1 Minor Mana Potion
-     
+
       npc.inventory = inventory;
     }
   });
@@ -255,7 +255,7 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
     exp: 0,
     inventory: [],
     locationId: startingTavern.id,
-    locationType: 'tavern',
+    locationType: "tavern",
     tileId: startingTavern.tileId,
     x: startingTavern.tileX,
     y: startingTavern.tileY,

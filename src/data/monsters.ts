@@ -10,7 +10,7 @@ export const monsters: { [key: string]: MonsterType } = {
     baseAtk: 2,
     baseExp: 3,
     baseGold: 3,
-    lootTables: ['basic-goblin'],
+    lootTables: ["basic-goblin"],
   },
   10000: {
     id: 100002,
@@ -21,6 +21,6 @@ export const monsters: { [key: string]: MonsterType } = {
     baseAtk: 3,
     baseExp: 3,
     baseGold: 0,
-    lootTables: ['basic-beast'],
+    lootTables: ["basic-beast"],
   },
-}
+};

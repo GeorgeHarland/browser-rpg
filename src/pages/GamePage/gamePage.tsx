@@ -1,13 +1,21 @@
 import { useContext, useEffect, useState } from "react";
 import "rpg-awesome/css/rpg-awesome.min.css";
 import { NarrativeLine, OptionText, Spacer, SpacerWithLine, SubtitleLine, ZoneTitle } from "./styled";
-import { ActivityType, GameStateType, NpcType, OptionType, ancestriesRecord, PointOfInterest, PlayerType } from "../../types";
+import {
+  ActivityType,
+  GameStateType,
+  NpcType,
+  OptionType,
+  ancestriesRecord,
+  PointOfInterest,
+  PlayerType,
+  ItemType,
+} from "../../types";
 import GameContext from "../../gameWorldState/gameContext";
 import { useNavigate } from "react-router-dom";
 import { validateGameState } from "../../gameWorldState/validateState";
 import { books } from "../../data/books";
 import { potions } from "../../data/potions";
-import { allItems } from "../../data/items";
 
 export const GamePage = () => {
   const navigate = useNavigate();
@@ -54,41 +62,16 @@ export const GamePage = () => {
     window.location.reload();
   };
 
-  const updateGold = (changeAmount: number, reset: boolean = true) => {
-    player.gold += changeAmount;
-    dispatch?.({ type: "UPDATE_GOLD", amount: changeAmount });
-    if (
-      narrative.mainNarrative[0].text ===
-      `Your gold has changed again. (${changeAmount >= 0 ? "+" + changeAmount : changeAmount})`
-    ) {
-      dispatch?.({
-        type: "UPDATE_MAIN_NARRATIVE",
-        newNarrative: {
-          text: "Your gold has changed. Again.",
-        },
-        reset: reset,
-      });
-    } else {
-      dispatch?.({
-        type: "UPDATE_MAIN_NARRATIVE",
-        newNarrative: {
-          text: `Your gold has changed. (${changeAmount >= 0 ? "+" + changeAmount : changeAmount})`,
-        },
-        reset: reset,
-      });
-    }
-  };
-
-  const updateNpcGold = (npc: NpcType, changeAmount: number) => {
-    npc.gold += changeAmount;
-    dispatch?.({ type: "UPDATE_NPC_GOLD", npcId: npc.id, amount: changeAmount });
-  };
+  const buyItem = (item: ItemType, npc: NpcType) => {
+    dispatch?.({ type: "BUY_ITEM", itemId: item.id, npcId: npc.id, cost: item.basePrice });
+    setTimeout(() => setOptions(generateOptions("dialogue", npc, null, true)), 5);
+  }
 
   const generateOptions = (
     nextActivity: ActivityType = "location",
     npc: NpcType | null = null,
     lootObject: string[] | null = null,
-    keepNarrative: boolean = false,
+    keepNarrative: boolean = false
   ): OptionType[] => {
     switch (nextActivity) {
       case "dialogue":
@@ -102,8 +85,7 @@ export const GamePage = () => {
             reset: true,
           });
           const options: OptionType[] = [];
-          lootObject.map((itemId) =>
-          {
+          lootObject.map((itemId) => {
             const item = books[itemId];
             options.push({
               type: "location",
@@ -114,9 +96,8 @@ export const GamePage = () => {
                   newNarrative: { text: item.bookText || "Barely legible." },
                   reset: true,
                 }),
-            })
-          }
-          );
+            });
+          });
           options.push({
             type: "spacer",
             description: "",
@@ -141,20 +122,20 @@ export const GamePage = () => {
 
   const generateLocationOptions = (): OptionType[] => {
     const locationOptions: OptionType[] = [];
-    let viewSurroundingsString = "Nothing much to see around here."
-    if (!(player?.locationId)) {
-      const tile = tiles[player.x][player.y]
-      viewSurroundingsString = "The forest is quiet and peaceful. You can hear the sounds of small animals and a nearby stream."
+    let viewSurroundingsString = "Nothing much to see around here.";
+    if (!player?.locationId) {
+      const tile = tiles[player.x][player.y];
+      viewSurroundingsString =
+        "The forest is quiet and peaceful. You can hear the sounds of small animals and a nearby stream.";
       tile.pointsOfInterest.forEach((locale) => {
-        if(locale.playerSeen) {
+        if (locale.playerSeen) {
           locationOptions.push({
             type: "location",
             description: `Go to ${locale.name}`,
-            action: () =>
-              enterArea(locale)
+            action: () => enterArea(locale),
           });
         }
-      })
+      });
       locationOptions.push({
         type: "spacer",
         description: "",
@@ -173,46 +154,46 @@ export const GamePage = () => {
     if (player?.locationId) {
       const locations = tiles[player.x][player.y].pointsOfInterest;
       const locale = locations.find((locale) => locale.id === player.locationId);
-      if(locale?.type === 'tavern') {
-      if(!locale) return [];
-      viewSurroundingsString = `
-      ${locale.name} is a ${locale.size} sized ${locale.type} and has ${locale.rooms} total rooms. It is known for it's ${locale.flavor}. ${locale.bookshelf ? " There is a bookshelf in the corner. " : ""}Outside the window you can see the surrounding area is ${locale.tileTerrainType}.`
-      locationOptions.push({
-        type: "location",
-        description: "Check the noticeboard",
-        action: () =>
-          dispatch?.({
-            type: "UPDATE_MAIN_NARRATIVE",
-            newNarrative: { text: "Nothing useful." },
-            reset: true,
-          }),
-      });
-      if (locale.bookshelf) {
-        if (locale.bookshelf.length > 0) {
-          locationOptions.push({
-            type: "location",
-            description: "Browse bookshelf",
-            action: () => setOptions(generateOptions("dialogue", null, locale.bookshelf)),
-          });
-        } else {
-          locationOptions.push({
-            type: "location",
-            description: "Browse bookshelf",
-            action: () =>
-              dispatch?.({
-                type: "UPDATE_MAIN_NARRATIVE",
-                newNarrative: { text: "Just a dusty set of shelves." },
-                reset: true,
-              }),
-          });
+      if (locale?.type === "tavern") {
+        if (!locale) return [];
+        viewSurroundingsString = `
+      ${locale.name} is a ${locale.size} sized ${locale.type} and has ${locale.rooms} total rooms. It is known for it's ${locale.flavor}. ${locale.bookshelf ? " There is a bookshelf in the corner. " : ""}Outside the window you can see the surrounding area is ${locale.tileTerrainType}.`;
+        locationOptions.push({
+          type: "location",
+          description: "Check the noticeboard",
+          action: () =>
+            dispatch?.({
+              type: "UPDATE_MAIN_NARRATIVE",
+              newNarrative: { text: "Nothing useful." },
+              reset: true,
+            }),
+        });
+        if (locale.bookshelf) {
+          if (locale.bookshelf.length > 0) {
+            locationOptions.push({
+              type: "location",
+              description: "Browse bookshelf",
+              action: () => setOptions(generateOptions("dialogue", null, locale.bookshelf)),
+            });
+          } else {
+            locationOptions.push({
+              type: "location",
+              description: "Browse bookshelf",
+              action: () =>
+                dispatch?.({
+                  type: "UPDATE_MAIN_NARRATIVE",
+                  newNarrative: { text: "Just a dusty set of shelves." },
+                  reset: true,
+                }),
+            });
+          }
         }
+        locationOptions.push({
+          type: "location",
+          description: "Leave tavern",
+          action: () => leaveTavern(player),
+        });
       }
-      locationOptions.push({
-        type: "location",
-        description: "Leave tavern",
-        action: () => leaveTavern(player),
-      });
-    }
     }
 
     const npcsInLocation = npcs.filter((npc) => npc.locationId === player.locationId);
@@ -250,15 +231,16 @@ export const GamePage = () => {
         text: npc.firstName + " " + npc.lastName,
       },
     });
-    if(!keepNarrative) {
-    dispatch?.({
-      type: "UPDATE_MAIN_NARRATIVE",
-      newNarrative: {
-        text: '"' + npc.dialogue.defaultOpener + '"',
-      },
-      reset: true,
-    });}
-    switch(npc.profession) {
+    if (!keepNarrative) {
+      dispatch?.({
+        type: "UPDATE_MAIN_NARRATIVE",
+        newNarrative: {
+          text: '"' + npc.dialogue.defaultOpener + '"',
+        },
+        reset: true,
+      });
+    }
+    switch (npc.profession) {
       case "Gambler":
         if (npc.gold < 1) {
           dispatch?.({
@@ -276,7 +258,7 @@ export const GamePage = () => {
             },
           });
         }
-        if(player.gold >= 1 && npc.gold >= 1) {
+        if (player.gold >= 1 && npc.gold >= 1) {
           options.push({
             type: "npc",
             description: "Play dice game (roll 2d6) - 1 gold to play",
@@ -291,7 +273,7 @@ export const GamePage = () => {
           options.push({
             type: "npc",
             description: `Buy ${item.name} - ${item.basePrice} gold`,
-            action: () => attemptToBuyItem(npc, itemId, item.basePrice),
+            action: () => buyItem(item, npc),
           });
         });
         break;
@@ -347,49 +329,28 @@ export const GamePage = () => {
       type: "PLAYER_ENTERS_AREA",
       id: locale.id,
       localeType: locale.type,
-    })
+    });
     dispatch?.({
       type: "UPDATE_MAIN_NARRATIVE",
       newNarrative: { text: `Entered ${locale.name}.` },
       reset: true,
-    })
-    setOptions(generateOptions('location'));
-  }
+    });
+    setOptions(generateOptions("location"));
+  };
 
   const leaveTavern = (player: PlayerType) => {
     player.locationId = null;
     player.locationType = null;
     dispatch?.({
       type: "PLAYER_LEAVES_AREA",
-    })
-    setOptions(generateOptions('location'));
+    });
+    setOptions(generateOptions("location"));
     dispatch?.({
       type: "UPDATE_MAIN_NARRATIVE",
       newNarrative: { text: `You left the tavern.` },
       reset: true,
-    })
+    });
   };
-
-  const attemptToBuyItem = (npc: NpcType, itemId: number, cost: number) => {
-    if (player.gold >= cost) {
-      updateGold(-cost, false);
-      updateNpcGold(npc, cost);
-      // add to inv
-      // remove from inv
-      dispatch?.({
-        type: "UPDATE_MAIN_NARRATIVE",
-        newNarrative: { text: `You bought a ${allItems[itemId].name} for ${cost} gold.` },
-        reset: true,
-      });
-    } else {
-      dispatch?.({
-        type: "UPDATE_MAIN_NARRATIVE",
-        newNarrative: { text: `You don't have enough gold to buy that.` },
-        reset: true,
-      });
-    }
-    setOptions(generateOptions('dialogue', npc, null, true));
-  }
 
   const playDiceGame = (npc: NpcType) => {
     const playerRoll1 = Math.floor(Math.random() * 6) + 1;
@@ -422,8 +383,8 @@ export const GamePage = () => {
           text: `You win!`,
         },
       });
-      updateGold(1, false);
-      updateNpcGold(npc, -1);
+      dispatch?.({ type: "UPDATE_GOLD", amount: 1, reset: false });
+      // updateNpcGold(npc, -1);
     } else if (oTotal > pTotal) {
       dispatch?.({
         type: "UPDATE_MAIN_NARRATIVE",
@@ -431,8 +392,8 @@ export const GamePage = () => {
           text: `You lose!`,
         },
       });
-      updateGold(-1, false);
-      updateNpcGold(npc, 1);
+      dispatch?.({ type: "UPDATE_GOLD", amount: -1, reset: false });
+      // updateNpcGold(npc, 1);
     } else {
       dispatch?.({
         type: "UPDATE_MAIN_NARRATIVE",
@@ -441,7 +402,7 @@ export const GamePage = () => {
         },
       });
     }
-    setOptions(generateOptions('dialogue', npc, null, true));
+    setOptions(generateOptions("dialogue", npc, null, true));
   };
 
   useEffect(() => {
@@ -449,14 +410,14 @@ export const GamePage = () => {
   }, []);
   // }, [narrative, npcs, locations, player]);
 
-  let title = 'Unknown Area'
-  if(player.x && player.y) {
+  let title = "Unknown Area";
+  if (player.x && player.y) {
     const tile = tiles[player.x][player.y];
     const locale = tile.pointsOfInterest.find((locale) => locale.id === player.locationId);
-    if(locale) {
-      title = locale.name
+    if (locale) {
+      title = locale.name;
     } else {
-      title = tile.name
+      title = tile.name;
     }
   }
 
@@ -526,4 +487,3 @@ export const GamePage = () => {
     </div>
   );
 };
-

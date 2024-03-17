@@ -1,6 +1,6 @@
 import { ItemType } from "../types";
 
-export const potions: {[key: string]: ItemType} = {
+export const potions: { [key: string]: ItemType } = {
   100001: {
     id: 100001,
     name: "Minor Healing Potion",
@@ -12,5 +12,5 @@ export const potions: {[key: string]: ItemType} = {
     name: "Minor Mana Potion",
     description: "A potion that grants 1 mana point",
     basePrice: 10,
-  }
+  },
 };

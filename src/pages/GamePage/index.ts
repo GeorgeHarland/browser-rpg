@@ -1,2 +1,2 @@
-export * from './gamePage.tsx';
-export * from './styled.ts';
+export * from "./gamePage.tsx";
+export * from "./styled.ts";
