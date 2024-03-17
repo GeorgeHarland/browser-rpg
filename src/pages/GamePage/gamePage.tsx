@@ -6,6 +6,8 @@ import GameContext from "../../gameWorldState/gameContext";
 import { useNavigate } from "react-router-dom";
 import { validateGameState } from "../../gameWorldState/validateState";
 import { books } from "../../data/books";
+import { potions } from "../../data/potions";
+import { allItems } from "../../data/items";
 
 export const GamePage = () => {
   const navigate = useNavigate();
@@ -85,11 +87,12 @@ export const GamePage = () => {
   const generateOptions = (
     nextActivity: ActivityType = "location",
     npc: NpcType | null = null,
-    lootObject: string[] | null = null
+    lootObject: string[] | null = null,
+    keepNarrative: boolean = false,
   ): OptionType[] => {
     switch (nextActivity) {
       case "dialogue":
-        if (npc) return generateNpcOptions(npc);
+        if (npc) return generateNpcOptions(npc, keepNarrative);
         if (lootObject) {
           dispatch?.({
             type: "UPDATE_MAIN_NARRATIVE",
@@ -239,7 +242,7 @@ export const GamePage = () => {
     return [viewSurroundings, spacer, ...npcOptions, spacer, ...locationOptions];
   };
 
-  const generateNpcOptions = (npc: NpcType): OptionType[] => {
+  const generateNpcOptions = (npc: NpcType, keepNarrative: boolean = false): OptionType[] => {
     const options: OptionType[] = [];
     dispatch?.({
       type: "UPDATE_SUBTITLE",
@@ -247,13 +250,14 @@ export const GamePage = () => {
         text: npc.firstName + " " + npc.lastName,
       },
     });
+    if(!keepNarrative) {
     dispatch?.({
       type: "UPDATE_MAIN_NARRATIVE",
       newNarrative: {
         text: '"' + npc.dialogue.defaultOpener + '"',
       },
       reset: true,
-    });
+    });}
     switch(npc.profession) {
       case "Gambler":
         if (npc.gold < 1) {
@@ -281,6 +285,15 @@ export const GamePage = () => {
         }
         break;
       case "Herbalist":
+        // sells any potions in their inventory
+        npc.inventory.forEach((itemId) => {
+          const item = potions[itemId];
+          options.push({
+            type: "npc",
+            description: `Buy ${item.name} - ${item.basePrice} gold`,
+            action: () => attemptToBuyItem(npc, itemId, item.basePrice),
+          });
+        });
         break;
       default:
         break;
@@ -357,6 +370,27 @@ export const GamePage = () => {
     })
   };
 
+  const attemptToBuyItem = (npc: NpcType, itemId: number, cost: number) => {
+    if (player.gold >= cost) {
+      updateGold(-cost, false);
+      updateNpcGold(npc, cost);
+      // add to inv
+      // remove from inv
+      dispatch?.({
+        type: "UPDATE_MAIN_NARRATIVE",
+        newNarrative: { text: `You bought a ${allItems[itemId].name} for ${cost} gold.` },
+        reset: true,
+      });
+    } else {
+      dispatch?.({
+        type: "UPDATE_MAIN_NARRATIVE",
+        newNarrative: { text: `You don't have enough gold to buy that.` },
+        reset: true,
+      });
+    }
+    setOptions(generateOptions('dialogue', npc, null, true));
+  }
+
   const playDiceGame = (npc: NpcType) => {
     const playerRoll1 = Math.floor(Math.random() * 6) + 1;
     const playerRoll2 = Math.floor(Math.random() * 6) + 1;
@@ -407,7 +441,7 @@ export const GamePage = () => {
         },
       });
     }
-    setOptions(generateOptions('dialogue', npc));
+    setOptions(generateOptions('dialogue', npc, null, true));
   };
 
   useEffect(() => {

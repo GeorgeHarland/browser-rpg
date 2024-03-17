@@ -5,7 +5,7 @@ export const potions: {[key: string]: ItemType} = {
     id: 100001,
     name: "Minor Healing Potion",
     description: "A potion that heals the drinker",
-    basePrice: 10,
+    basePrice: 5,
   },
   100002: {
     id: 100002,

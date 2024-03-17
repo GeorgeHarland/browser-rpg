@@ -231,7 +231,19 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
       const npc = generateNpc(tavern.id, tavern.type, tavern.tileX, tavern.tileY);
       npcs.push(npc);
     }
-  });  
+  });
+
+  // set npc inventories
+  npcs.forEach((npc) => {
+    if (npc.profession === "Herbalist") {
+      const inventory = [];
+      inventory.push(100001); // 1 Minor Healing Potion
+      Math.random() > 0.5 && inventory.push(100001); // 50% chance of a second Minor Healing Potion
+      Math.random() > 0.5 && inventory.push(100002); // 50% chance of 1 Minor Mana Potion
+     
+      npc.inventory = inventory;
+    }
+  });
 
   const player = {
     firstName: playerFirstName,

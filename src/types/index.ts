@@ -35,7 +35,7 @@ export type PlayerType = {
   mana: number;
   gold: number;
   exp: number;
-  inventory: ItemType[];
+  inventory: number[];
   locationId: number | null;
   locationType: string | null;
   tileId: number;
@@ -65,7 +65,7 @@ export type NpcType = {
   maxHp: number;
   mana: number;
   gold: number;
-  inventory: ItemType[];
+  inventory: number[];
   currentLocation: number;
   dialogue: NpcDialogueType;
   locationId: number;
