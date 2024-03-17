@@ -16,6 +16,7 @@ import { useNavigate } from "react-router-dom";
 import { validateGameState } from "../../gameWorldState/validateState";
 import { books } from "../../data/books";
 import { potions } from "../../data/potions";
+import { rollForestEncounter } from "../../randomTables/explorationTables";
 
 export const GamePage = () => {
   const navigate = useNavigate();
@@ -67,12 +68,95 @@ export const GamePage = () => {
     setTimeout(() => setOptions(generateOptions("dialogue", npc, null, true)), 5);
   };
 
+  const exploreForest = (): void => {
+    const encounter = rollForestEncounter();
+    dispatch?.({
+      type: "UPDATE_SUBTITLE",
+      newSubtitle: { text: encounter.name },
+    });
+    const options: OptionType[] = [];
+    switch (encounter.name) {
+      case "Suspicious Mushrooms":
+        dispatch?.({
+          type: "UPDATE_MAIN_NARRATIVE",
+          newNarrative: { text: `You found some mushrooms. They look suspicious.` },
+          reset: true,
+        });
+        options.push({
+          type: "dialogue",
+          description: "Eat the mushrooms",
+          action: () => {
+            dispatch?.({
+              type: "UPDATE_MAIN_NARRATIVE",
+              newNarrative: { text: `You eat the mushrooms. They taste terrible (-2 hp).` },
+              reset: true,
+            });
+            dispatch?.({ type: "UPDATE_PLAYER_HP", amount: -2 });
+            setOptions(generateOptions("location"));
+          },
+        });
+        options.push({
+          type: "dialogue",
+          description: "Leave the mushrooms alone",
+          action: () => {
+            dispatch?.({
+              type: "UPDATE_MAIN_NARRATIVE",
+              newNarrative: { text: `You left the mushrooms alone. Wise choice.` },
+              reset: true,
+            });
+            setOptions(generateOptions("location"));
+          },
+        });
+        setOptions(options);
+        break;
+      case "Goblin":
+        dispatch?.({
+          type: "UPDATE_MAIN_NARRATIVE",
+          newNarrative: { text: `A goblin jumps out of the bushes!` },
+          reset: true,
+        });
+        setOptions(generateOptions("combat"));
+        break;
+      case "Giant Spider":
+        dispatch?.({
+          type: "UPDATE_MAIN_NARRATIVE",
+          newNarrative: { text: `A giant spider drops down from the trees!` },
+          reset: true,
+        });
+        setOptions(generateOptions("combat"));
+        break;
+      default:
+        dispatch?.({
+          type: "UPDATE_MAIN_NARRATIVE",
+          newNarrative: { text: `You trek the forest but find nothing of interest.` },
+          reset: true,
+        });
+        setOptions(generateOptions("explore"));
+        break;
+    }
+    // setTimeout(() => setOptions(generateOptions("explore")), 5);
+  };
+
   const generateOptions = (
     nextActivity: ActivityType = "location",
     npc: NpcType | null = null,
     lootObject: string[] | null = null,
     keepNarrative: boolean = false
   ): OptionType[] => {
+    if (player.currentHp <= 0) {
+      dispatch?.({
+        type: "UPDATE_MAIN_NARRATIVE",
+        newNarrative: { text: `GAME OVER` },
+        reset: true,
+      });
+      return [
+        {
+          type: "location",
+          description: "Restart game",
+          action: () => fullyResetGame(),
+        },
+      ];
+    }
     switch (nextActivity) {
       case "dialogue":
         if (npc) return generateNpcOptions(npc, keepNarrative);
@@ -113,7 +197,7 @@ export const GamePage = () => {
         return [];
       case "location":
         return generateLocationOptions();
-      case "worldMap":
+      case "explore":
         return [];
       default:
         return [];
@@ -127,6 +211,15 @@ export const GamePage = () => {
       const tile = tiles[player.x][player.y];
       viewSurroundingsString =
         "The forest is quiet and peaceful. You can hear the sounds of small animals and a nearby stream.";
+      locationOptions.push({
+        type: "location",
+        description: "Explore",
+        action: () => exploreForest(),
+      });
+      locationOptions.push({
+        type: "spacer",
+        description: "",
+      });
       tile.pointsOfInterest.forEach((locale) => {
         if (locale.playerSeen) {
           locationOptions.push({
@@ -135,20 +228,6 @@ export const GamePage = () => {
             action: () => enterArea(locale),
           });
         }
-      });
-      locationOptions.push({
-        type: "spacer",
-        description: "",
-      });
-      locationOptions.push({
-        type: "location",
-        description: "Explore",
-        action: () =>
-          dispatch?.({
-            type: "UPDATE_MAIN_NARRATIVE",
-            newNarrative: { text: `Nothing let to explore in this ${tile.terrainType} area.` },
-            reset: true,
-          }),
       });
     }
     if (player?.locationId) {

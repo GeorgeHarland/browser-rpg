@@ -53,18 +53,18 @@ const gameReducer = (state: GameStateType, action: GameAction): GameStateType =>
       //   },
       //   reset: true,
       // });
-  
+
       const opponentRoll1 = Math.floor(Math.random() * 6) + 1;
       const opponentRoll2 = Math.floor(Math.random() * 6) + 1;
       const oTotal = opponentRoll1 + opponentRoll2;
-  
+
       // dispatch?.({
       //   type: "UPDATE_MAIN_NARRATIVE",
       //   newNarrative: {
       //     text: ``,
       //   },
       // });
-      if(state.player.gold < 1) {
+      if (state.player.gold < 1) {
         return {
           ...state,
           narrative: {
@@ -73,7 +73,7 @@ const gameReducer = (state: GameStateType, action: GameAction): GameStateType =>
           },
         };
       }
-      if((state.npcs.find((npc) => npc.id === action.npc.id)?.gold ?? 0) < 1) {
+      if ((state.npcs.find((npc) => npc.id === action.npc.id)?.gold ?? 0) < 1) {
         return {
           ...state,
           narrative: {
@@ -90,7 +90,7 @@ const gameReducer = (state: GameStateType, action: GameAction): GameStateType =>
             mainNarrative: [
               { text: `You rolled a ${playerRoll1} and a ${playerRoll2}, totaling ${pTotal}.` },
               { text: `${action.npc.firstName} rolled a ${opponentRoll1} and a ${opponentRoll2}, totaling ${oTotal}.` },
-              { text: `You win!` }
+              { text: `You win!` },
             ],
           },
           player: { ...state.player, gold: state.player.gold + 1 },
@@ -100,7 +100,7 @@ const gameReducer = (state: GameStateType, action: GameAction): GameStateType =>
             } else {
               return npc;
             }
-          })
+          }),
         };
       } else if (pTotal < oTotal) {
         return {
@@ -110,7 +110,7 @@ const gameReducer = (state: GameStateType, action: GameAction): GameStateType =>
             mainNarrative: [
               { text: `You rolled a ${playerRoll1} and a ${playerRoll2}, totaling ${pTotal}.` },
               { text: `${action.npc.firstName} rolled a ${opponentRoll1} and a ${opponentRoll2}, totaling ${oTotal}.` },
-              { text: `You lost!` }
+              { text: `You lost!` },
             ],
           },
           player: { ...state.player, gold: state.player.gold - 1 },
@@ -120,7 +120,7 @@ const gameReducer = (state: GameStateType, action: GameAction): GameStateType =>
             } else {
               return npc;
             }
-          })
+          }),
         };
       } else {
         return {
@@ -130,7 +130,7 @@ const gameReducer = (state: GameStateType, action: GameAction): GameStateType =>
             mainNarrative: [{ text: `You both draw!` }],
           },
         };
-      } 
+      }
     case "PLAYER_ENTERS_AREA":
       return {
         ...state,
@@ -210,6 +210,22 @@ const gameReducer = (state: GameStateType, action: GameAction): GameStateType =>
         }),
       };
     case "UPDATE_PLAYER_HP":
+      if (state.player.currentHp + action.amount <= 0) {
+        return {
+          ...state,
+          narrative: {
+            ...state.narrative,
+            mainNarrative: [
+              { text: `GAME OVER` },
+              { text: "Your adventure has ended. You can restart the game by refreshing the page." },
+            ],
+          },
+          player: {
+            ...state.player,
+            currentHp: 0,
+          },
+        };
+      }
       return {
         ...state,
         player: {

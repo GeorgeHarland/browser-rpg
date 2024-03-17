@@ -12,7 +12,7 @@ export const monsters: { [key: string]: MonsterType } = {
     baseGold: 3,
     lootTables: ["basic-goblin"],
   },
-  10000: {
+  100002: {
     id: 100002,
     name: "Giant Spider",
     description: "A large, hairy spider.",

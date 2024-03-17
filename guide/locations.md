@@ -2,24 +2,32 @@
 
 ## Terrain Tiles
 
-All
+### All
+
+Points of Interest:
 - Ruins
 
-Desert - ...
+### Desert
 
-Forest
-- Tavern
+### Forest
 
-Hills - ...
+Points of Interest:
 
-Mountain
+Encounters:
+- Suspicious Mushrooms
+
+### Hills
+
+### Mountain
+
+Points of Interest
 - Iron Mine
 
-Plains - ...
+### Plains
 
-Swamp - ...
+### Swamp
 
-Tundra - ...
+### Tundra
 
 ## Points of Interest
 
@@ -27,4 +35,8 @@ Iron Mine - ...
 
 Ruins - ...
 
-Tavern - ...
+Tavern - Houses several useful NPCs and other features such as bookshelves.
+
+## Encounters
+
+Suspicious Mushrooms - ...

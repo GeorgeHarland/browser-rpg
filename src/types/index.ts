@@ -226,4 +226,9 @@ export type PersonalityType = {
 
 export type SizeKeys = "small" | "medium" | "large" | "huge";
 
-export type ActivityType = "dialogue" | "combat" | "location" | "worldMap";
+export type ActivityType = "dialogue" | "combat" | "location" | "explore";
+
+export type EncounterDetails = {
+  name: string;
+  monsterId: number | null;
+};
