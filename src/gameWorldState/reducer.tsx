@@ -2,6 +2,42 @@ import { GameAction, GameStateType } from "../types";
 
 const gameReducer = (state: GameStateType, action: GameAction): GameStateType => {
   switch (action.type) {
+    case "ADD_EXP":
+      return {
+        ...state,
+        player: {
+          ...state.player,
+          exp: state.player.exp + action.amount,
+        },
+        narrative: {
+          ...state.narrative,
+          mainNarrative: [
+            { text: `Your experience has changed. (${action.amount >= 0 ? "+" + action.amount : action.amount})` },
+          ],
+        },
+      };
+    case "ADD_GOLD":
+      return {
+        ...state,
+        player: {
+          ...state.player,
+          gold: state.player.gold + action.amount,
+        },
+        narrative: {
+          ...state.narrative,
+          mainNarrative: [
+            { text: `Your gold has changed. (${action.amount >= 0 ? "+" + action.amount : action.amount})` },
+          ],
+        },
+      };
+    case "ADD_ITEM_TO_INVENTORY":
+      return {
+        ...state,
+        player: {
+          ...state.player,
+          inventory: [...state.player.inventory, action.itemId],
+        },
+      };
     case "BUY_ITEM":
       if (state.player.gold < action.cost) {
         return {
@@ -39,8 +75,93 @@ const gameReducer = (state: GameStateType, action: GameAction): GameStateType =>
           }),
         };
       }
+    case "COMBAT_TRADE_BLOWS":
+      if (state.player.currentHp - action.monsterDamage <= 0) {
+        return {
+          ...state,
+          narrative: {
+            ...state.narrative,
+            mainNarrative: [
+              { text: `GAME OVER` },
+              { text: "Your adventure has ended. You can restart the game by refreshing the page." },
+            ],
+          },
+          player: {
+            ...state.player,
+            currentHp: 0,
+          },
+        };
+      }
+      if (!state.temp.currentMonster) {
+        return state;
+      }
+      if (state.temp.currentMonster?.currentHp - action.playerDamage <= 0) {
+        // roll loottables
+        const loot = [200001];
+        return {
+          ...state,
+          player: {
+            ...state.player,
+            exp: state.player.exp + state.temp.currentMonster.exp,
+            gold: state.player.gold + state.temp.currentMonster.gold,
+            currentHp: state.player.currentHp - action.monsterDamage,
+            inventory: [...state.player.inventory, ...loot],
+          },
+          temp: {
+            ...state.temp,
+            currentMonster: null,
+          },
+          narrative: {
+            ...state.narrative,
+            mainNarrative: [
+              { text: `You have defeated the monster!` },
+              {
+                text: `You gain ${state.temp.currentMonster.exp} experience and ${state.temp.currentMonster.gold} gold.`,
+              },
+            ],
+          },
+        };
+      }
+      return {
+        ...state,
+        player: {
+          ...state.player,
+          currentHp: state.player.currentHp - action.monsterDamage,
+        },
+        temp: {
+          ...state.temp,
+          currentMonster: {
+            ...state.temp.currentMonster,
+            currentHp: state.temp.currentMonster.currentHp - action.playerDamage,
+          },
+        },
+      };
     case "LOAD_STATE":
       return action.stateToLoad;
+    case "MONSTER_ATTACK_PLAYER":
+      if (state.player.currentHp - action.damage <= 0) {
+        return {
+          ...state,
+          narrative: {
+            ...state.narrative,
+            mainNarrative: [
+              { text: `GAME OVER` },
+              { text: "Your adventure has ended. You can restart the game by refreshing the page." },
+            ],
+          },
+          player: {
+            ...state.player,
+            currentHp: 0,
+          },
+        };
+      }
+      return {
+        ...state,
+        player: {
+          ...state.player,
+          currentHp: state.player.currentHp - action.damage,
+        },
+      };
     case "PLAY_DICE_GAME":
       const playerRoll1 = Math.floor(Math.random() * 6) + 1;
       const playerRoll2 = Math.floor(Math.random() * 6) + 1;
@@ -153,6 +274,14 @@ const gameReducer = (state: GameStateType, action: GameAction): GameStateType =>
       return {
         ...state,
         options: { ...action.optionsToAdd },
+      };
+    case "SET_CURRENT_MONSTER":
+      return {
+        ...state,
+        temp: {
+          ...state.temp,
+          currentMonster: action.monster,
+        },
       };
     case "UPDATE_GOLD":
       if (

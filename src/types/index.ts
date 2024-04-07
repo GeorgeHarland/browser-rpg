@@ -10,15 +10,24 @@ export type GameStateType = {
   otherInfo: {
     startingTavern: PointOfInterest;
   };
+  temp: {
+    currentMonster: CurrentMonster | null;
+  };
 };
 
 export type GameAction =
+  | { type: "ADD_EXP"; amount: number }
+  | { type: "ADD_GOLD"; amount: number }
+  | { type: "ADD_ITEM_TO_INVENTORY"; itemId: number }
   | { type: "BUY_ITEM"; itemId: number; npcId: number; cost: number }
+  | { type: "COMBAT_TRADE_BLOWS"; playerDamage: number; monsterDamage: number }
   | { type: "LOAD_STATE"; stateToLoad: GameStateType }
+  | { type: "MONSTER_ATTACK_PLAYER"; damage: number }
   | { type: "PLAY_DICE_GAME"; npc: NpcType }
   | { type: "PLAYER_ENTERS_AREA"; id: number; localeType: string }
   | { type: "PLAYER_LEAVES_AREA" }
   | { type: "SAVE_OPTIONS_TO_STATE"; optionsToAdd: OptionType[] }
+  | { type: "SET_CURRENT_MONSTER"; monster: CurrentMonster }
   | { type: "UPDATE_GOLD"; amount: number; reset: boolean }
   | {
       type: "UPDATE_MAIN_NARRATIVE";
@@ -138,12 +147,24 @@ export type MonsterType = {
   lootTables: lootTable[];
 };
 
+export type CurrentMonster = {
+  monsterId: number;
+  currentHp: number;
+  name: string;
+  description: string;
+  maxHp: number;
+  attack: number;
+  exp: number;
+  gold: number;
+  lootTables: lootTable[];
+};
+
 export type lootTable = "basic-beast" | "basic-goblin";
 
 export type OptionType = {
   type: string;
   description: string;
-  action?: (...args: any[]) => any;
+  action?: (...args: unknown[]) => unknown;
 };
 
 export const ancestriesRecord: Record<AncestryKeys, AncestryType> = {

@@ -1,7 +1,7 @@
 import { EncounterDetails } from "../types";
 
 export const rollForestEncounter = (): EncounterDetails => {
-  const roll = 2; // Math.floor(Math.random() * 3) + 1;
+  const roll = Math.floor(Math.random() * 4) + 1;
   switch (roll) {
     case 1:
       return {

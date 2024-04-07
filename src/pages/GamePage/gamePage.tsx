@@ -10,6 +10,7 @@ import {
   PointOfInterest,
   PlayerType,
   ItemType,
+  CurrentMonster,
 } from "../../types";
 import GameContext from "../../gameWorldState/gameContext";
 import { useNavigate } from "react-router-dom";
@@ -17,6 +18,7 @@ import { validateGameState } from "../../gameWorldState/validateState";
 import { books } from "../../data/books";
 import { potions } from "../../data/potions";
 import { rollForestEncounter } from "../../randomTables/explorationTables";
+import { monsters } from "../../data/monsters";
 
 export const GamePage = () => {
   const navigate = useNavigate();
@@ -65,7 +67,7 @@ export const GamePage = () => {
 
   const buyItem = (item: ItemType, npc: NpcType) => {
     dispatch?.({ type: "BUY_ITEM", itemId: item.id, npcId: npc.id, cost: item.basePrice });
-    setTimeout(() => setOptions(generateOptions("dialogue", npc, null, true)), 5);
+    setTimeout(() => setOptions(generateOptions("dialogue", npc, null, null, true)), 5);
   };
 
   const exploreForest = (): void => {
@@ -115,7 +117,7 @@ export const GamePage = () => {
           newNarrative: { text: `A goblin jumps out of the bushes!` },
           reset: true,
         });
-        setOptions(generateOptions("combat"));
+        setOptions(generateOptions("combat", null, 100001));
         break;
       case "Giant Spider":
         dispatch?.({
@@ -123,7 +125,7 @@ export const GamePage = () => {
           newNarrative: { text: `A giant spider drops down from the trees!` },
           reset: true,
         });
-        setOptions(generateOptions("combat"));
+        setOptions(generateOptions("combat", null, 100002));
         break;
       default:
         dispatch?.({
@@ -131,7 +133,19 @@ export const GamePage = () => {
           newNarrative: { text: `You trek the forest but find nothing of interest.` },
           reset: true,
         });
-        setOptions(generateOptions("explore"));
+        options.push({
+          type: "dialogue",
+          description: "Leave",
+          action: () => {
+            dispatch?.({
+              type: "UPDATE_MAIN_NARRATIVE",
+              newNarrative: { text: `You returned to a familiar area.` },
+              reset: true,
+            });
+            setOptions(generateOptions("location"));
+          },
+        });
+        setOptions(options);
         break;
     }
     // setTimeout(() => setOptions(generateOptions("explore")), 5);
@@ -140,6 +154,7 @@ export const GamePage = () => {
   const generateOptions = (
     nextActivity: ActivityType = "location",
     npc: NpcType | null = null,
+    monsterId: number | null = null,
     lootObject: string[] | null = null,
     keepNarrative: boolean = false
   ): OptionType[] => {
@@ -157,6 +172,9 @@ export const GamePage = () => {
         },
       ];
     }
+
+    const options: OptionType[] = [];
+
     switch (nextActivity) {
       case "dialogue":
         if (npc) return generateNpcOptions(npc, keepNarrative);
@@ -168,7 +186,6 @@ export const GamePage = () => {
             },
             reset: true,
           });
-          const options: OptionType[] = [];
           lootObject.map((itemId) => {
             const item = books[itemId];
             options.push({
@@ -194,13 +211,62 @@ export const GamePage = () => {
           return options;
         } else return [];
       case "combat":
-        return [];
+        if (!monsterId) {
+          return generateLocationOptions();
+        }
+
+        let currentMonster: CurrentMonster;
+
+        const gameState = useContext(GameContext)?.state;
+
+        if (!gameState?.temp?.currentMonster) {
+          const monsterHp =
+            monsters[monsterId].minHp +
+            Math.floor(Math.random() * (monsters[monsterId].maxHp - monsters[monsterId].minHp + 1));
+
+          currentMonster = {
+            monsterId: monsterId,
+            currentHp: monsterHp,
+            name: monsters[monsterId].name,
+            description: monsters[monsterId].description,
+            maxHp: monsterHp,
+            attack: monsters[monsterId].baseAtk,
+            exp: monsters[monsterId].baseExp,
+            gold: monsters[monsterId].baseGold,
+            lootTables: monsters[monsterId].lootTables,
+          };
+        } else {
+          currentMonster = gameState.temp.currentMonster;
+        }
+
+        dispatch?.({
+          type: "SET_CURRENT_MONSTER",
+          monster: currentMonster,
+        });
+
+        dispatch?.({
+          type: "UPDATE_MAIN_NARRATIVE",
+          newNarrative: { text: `A ${currentMonster.name} is in front of you!` },
+        });
+
+        options.push({
+          type: "combat",
+          description: "Attack",
+          action: () => attackMonster(currentMonster),
+        });
+        options.push({
+          type: "combat",
+          description: "Flee",
+          action: () => fleeFromMonster(currentMonster),
+        });
+
+        return options;
       case "location":
         return generateLocationOptions();
       case "explore":
         return [];
       default:
-        return [];
+        return generateLocationOptions();
     }
   };
 
@@ -252,7 +318,7 @@ export const GamePage = () => {
             locationOptions.push({
               type: "location",
               description: "Browse bookshelf",
-              action: () => setOptions(generateOptions("dialogue", null, locale.bookshelf)),
+              action: () => setOptions(generateOptions("dialogue", null, null, locale.bookshelf)),
             });
           } else {
             locationOptions.push({
@@ -415,7 +481,54 @@ export const GamePage = () => {
 
   const playDiceGame = (npc: NpcType) => {
     dispatch?.({ type: "PLAY_DICE_GAME", npc: npc });
-    setTimeout(() => setOptions(generateOptions("dialogue", npc, null, true)), 5);
+    setTimeout(() => setOptions(generateOptions("dialogue", npc, null, null, true)), 5);
+  };
+
+  const attackMonster = (monster: CurrentMonster) => {
+    const playerDamage = 2;
+    const monsterDamage = monster.attack;
+
+    dispatch?.({
+      type: "COMBAT_TRADE_BLOWS",
+      playerDamage: playerDamage,
+      monsterDamage: monsterDamage,
+    });
+
+    dispatch?.({
+      type: "UPDATE_MAIN_NARRATIVE",
+      newNarrative: { text: `You hit the ${monster.name} for ${playerDamage} damage!` },
+      reset: true,
+    });
+    dispatch?.({
+      type: "UPDATE_MAIN_NARRATIVE",
+      newNarrative: { text: `The ${monster.name} hits you for ${monsterDamage} damage!` },
+    });
+
+    setOptions(generateOptions("combat", null, monster.monsterId));
+  };
+
+  const fleeFromMonster = (monster: CurrentMonster) => {
+    const fleeSuccess = Math.random() < 0.5;
+    if (fleeSuccess) {
+      dispatch?.({
+        type: "UPDATE_MAIN_NARRATIVE",
+        newNarrative: { text: `You managed to escape the ${monster.name}!` },
+        reset: true,
+      });
+      setOptions(generateOptions("location"));
+    } else {
+      const damage = monster.attack;
+      dispatch?.({
+        type: "MONSTER_ATTACK_PLAYER",
+        damage,
+      });
+      dispatch?.({
+        type: "UPDATE_MAIN_NARRATIVE",
+        newNarrative: { text: `You failed to flee and took ${damage} damage from the ${monster.name}!` },
+        reset: true,
+      });
+      setOptions(generateOptions("combat", null, monster.monsterId));
+    }
   };
 
   useEffect(() => {

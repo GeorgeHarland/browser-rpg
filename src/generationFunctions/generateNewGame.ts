@@ -19,7 +19,7 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
     for (let j = 0; j < worldSize; j++) {
       const randomNumber = Math.random();
       if (i > 0) previousYTile = worldGrid[i - 1][j].terrainType;
-      let matchPreviousRandomFactor = Math.random();
+      const matchPreviousRandomFactor = Math.random();
       let tileType = "forest";
 
       if (matchPreviousRandomFactor > 0.15 && previousXTile != "unique" && previousYTile != "unique")
@@ -311,6 +311,9 @@ export const generateNewGame = (playerFirstName: string = "Tom", playerLastName:
     tiles: worldGrid,
     otherInfo: {
       startingTavern: startingTavern,
+    },
+    temp: {
+      currentMonster: null,
     },
   } as GameStateType;
 };
