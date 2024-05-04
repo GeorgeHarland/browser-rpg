@@ -7,7 +7,7 @@ import {
   personalitiesRecord,
   professionsRecord,
 } from "../types";
-import { getRandomElement, getRandomKey } from "../utils/arrayFunctions";
+import { getRandomElement, getRandomKey } from "../utils/utils";
 
 const firstNames = [
   "Alison",

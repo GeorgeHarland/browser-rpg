@@ -1,15 +1,10 @@
 {
-  "extends": [
-    "prettier",
-    "plugin:@typescript-eslint/recommended" 
-  ],
-  "plugins": [
-    "prettier",
-    "@typescript-eslint"
-  ],
+  "extends": ["prettier", "plugin:@typescript-eslint/recommended"],
+  "plugins": ["prettier", "@typescript-eslint", "react"],
   "parser": "@typescript-eslint/parser",
   "rules": {
-    "prettier/prettier": "error",
-    "@typescript-eslint/explicit-member-accessibility": ["error", { "accessibility": "explicit" }]
+    "prettier/prettier": "warning",
+    "@typescript-eslint/explicit-member-accessibility": ["error", { "accessibility": "explicit" }],
+    "react/prop-types": "error"
   }
 }
